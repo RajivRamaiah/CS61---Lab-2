@@ -20,8 +20,7 @@ if __name__ == "__main__":
 
   try:
     # initialize db connection
-    con = mysql.connector.connect(host=SERVER,user=USERNAME,password=PASSWORD,
-                                  database=DATABASE)
+    con = mysql.connector.connect(host=SERVER,user=USERNAME,password=PASSWORD, database=DATABASE)
 
     print("Connection established.")
 
@@ -36,6 +35,7 @@ if __name__ == "__main__":
     # print table header
     print("".join(["{:<12}".format(col) for col in cursor.column_names]))
     print("--------------------------------------------")
+
 
     # iterate through results
     for row in cursor:
