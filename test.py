@@ -17,7 +17,7 @@ QUERY    = "SELECT * FROM REVIEWER;"       # query statement
 
 print("This line will be printed.")
 if __name__ == "__main__":
-  print("This line will be printed too.")
+
   try:
     # initialize db connection
     con = mysql.connector.connect(host=SERVER,user=USERNAME,password=PASSWORD,
