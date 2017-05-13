@@ -38,9 +38,21 @@ if __name__ == "__main__":
 					print("REGISTERING EDITOR")
 					registerEditor(con, textArray[2], textArray[3])
 
+
+				# register|reviewer|fname|lname|email|affiliation|one|two|three
 				if (textArray[1] == "reviewer"):
+					if (len(textArray) == 7):
+						print("One")
+						registerReviewerWithOne(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6])
+					elif (len(textArray) == 8):
+						print("Two")
+						registerReviewerWithTwo(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7])
+					elif (len(textArray) == 9):
+						print("Three")
+						registerReviewerWithThree(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7], textArray[8])
+					else:
+						print("ERROR: Must register reviewer with 1-3 RI Codes")
 					print("REGISTERING REVIEWER")
-					registerReviewer()
 
 			# LOGIN
 			elif (textArray[0] == "login"):
@@ -55,7 +67,7 @@ if __name__ == "__main__":
 
 				if (textArray[1] == "reviewer"):
 					print("LOGIN REVIEWER")
-					startReviewerShell()
+					startReviewerShell(con, textArray[2])
 
 			elif (textArray[0] == "exit"):
 				break
