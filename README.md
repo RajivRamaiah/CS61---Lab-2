@@ -11,3 +11,7 @@ did not implement blob on submit as stated was allowed
 
 when we register an author, we do mailing address before email, and we allow them to submit a preliminary affiliation
 this can be updated if when they submit a new paper as well.
+
+submitted = receive for us
+
+secondary authors must have a first and last name separated by a space

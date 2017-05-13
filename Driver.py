@@ -57,6 +57,9 @@ if __name__ == "__main__":
 					print("LOGIN REVIEWER")
 					startReviewerShell()
 
+			elif (textArray[0] == "exit"):
+				break
+
 			else:
 				print ("ERROR: There is an error in your syntax. Please try again.")
 
