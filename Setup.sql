@@ -14,18 +14,18 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- Schema rajiv_db
 -- -----------------------------------------------------
 -- Reset Database
-DROP DATABASE IF EXISTS `rajiv_db`;
--- -----------------------------------------------------
+-- DROP DATABASE IF EXISTS `rajiv_db`;
+-- -- -----------------------------------------------------
 -- Schema rajiv_db
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `rajiv_db` DEFAULT CHARACTER SET utf8 ;
+-- CREATE SCHEMA IF NOT EXISTS `rajiv_db` DEFAULT CHARACTER SET utf8 ;
 USE `rajiv_db` ;
 
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`EDITOR`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `rajiv_db`.`EDITOR`;
-
+-- DROP TABLE IF EXISTS `rajiv_db`.`EDITOR`;
+-- 
 CREATE TABLE `rajiv_db`.`EDITOR` (
   `ID` INT NOT NULL AUTO_INCREMENT,
   `FNAME` VARCHAR(45) NOT NULL,
@@ -37,8 +37,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`REVIEWER`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `rajiv_db`.`REVIEWER`;
-
+-- DROP TABLE IF EXISTS `rajiv_db`.`REVIEWER`;
+-- 
 CREATE TABLE `rajiv_db`.`REVIEWER` (
   `NUMBER` INT NOT NULL AUTO_INCREMENT,
   `FNAME` VARCHAR(45) NOT NULL,
@@ -53,8 +53,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`RI_CODE`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `rajiv_db`.`RI_CODE`;
-
+-- DROP TABLE IF EXISTS `rajiv_db`.`RI_CODE`;
+-- 
 CREATE TABLE `rajiv_db`.`RI_CODE` (
   `RI_CODE` INT NOT NULL AUTO_INCREMENT,
   `SUBJECT` VARCHAR(64) NOT NULL,
@@ -65,8 +65,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`AUTHOR`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `rajiv_db`.`AUTHOR`;
-
+-- DROP TABLE IF EXISTS `rajiv_db`.`AUTHOR`;
+-- 
 CREATE TABLE `rajiv_db`.`AUTHOR` (
   `ID` INT NOT NULL AUTO_INCREMENT,
   `FNAME` VARCHAR(45) NOT NULL,
@@ -82,8 +82,8 @@ COMMENT = 'AUTH_MAILING_ADDRESS';
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`JOURNAL_ISSUE`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `rajiv_db`.`JOURNAL_ISSUE`;
-
+-- DROP TABLE IF EXISTS `rajiv_db`.`JOURNAL_ISSUE`;
+-- 
 CREATE TABLE `rajiv_db`.`JOURNAL_ISSUE` (
   `YEAR` INT NOT NULL,
   `PERIOD` INT NOT NULL,
@@ -95,8 +95,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`MANUSCRIPT`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `rajiv_db`.`MANUSCRIPT`;
-
+-- DROP TABLE IF EXISTS `rajiv_db`.`MANUSCRIPT`;
+-- 
 CREATE TABLE `rajiv_db`.`MANUSCRIPT` (
   `NUMBER` INT NOT NULL AUTO_INCREMENT,
   `TITLE` VARCHAR(45) NOT NULL,
@@ -143,8 +143,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`REVIEW`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `rajiv_db`.`REVIEW`;
-
+-- DROP TABLE IF EXISTS `rajiv_db`.`REVIEW`;
+-- 
 CREATE TABLE `rajiv_db`.`REVIEW` (
   `REVIEWER_NUMBER` INT NOT NULL,
   `MANUSCRIPT_NUMBER` INT NOT NULL,
@@ -166,8 +166,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`SECONDARY_AUTHOR`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `rajiv_db`.`SECONDARY_AUTHOR`;
-
+-- DROP TABLE IF EXISTS `rajiv_db`.`SECONDARY_AUTHOR`;
+-- 
 CREATE TABLE `rajiv_db`.`SECONDARY_AUTHOR` (
   `MANUSCRIPT_NUMBER` INT NOT NULL,
   `ORDER_IN_MANUSCRIPT` INT NOT NULL,
@@ -186,8 +186,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`REVIEWER_GROUP`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `rajiv_db`.`REVIEWER_GROUP`;
-
+-- DROP TABLE IF EXISTS `rajiv_db`.`REVIEWER_GROUP`;
+-- 
 CREATE TABLE `rajiv_db`.`REVIEWER_GROUP` (
   `MANUSCRIPT_NUMBER` INT NOT NULL,
   `REVIEWER_NUMBER` INT NOT NULL,
@@ -209,8 +209,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`CODE_GROUP`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `rajiv_db`.`CODE_GROUP`;
-
+-- DROP TABLE IF EXISTS `rajiv_db`.`CODE_GROUP`;
+-- 
 CREATE TABLE `rajiv_db`.`CODE_GROUP` (
   `REVIEWER_NUMBER` INT NOT NULL,
   `RI_CODE` INT NOT NULL,
