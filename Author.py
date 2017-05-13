@@ -8,10 +8,6 @@ import random
 import time    
 from datetime import date, datetime, timedelta
 
-
-def addAuthor():
-	print("ADD AUTHOR HERE")
-
 def registerAuthor(con, firstname, lastname, address, email, affiliation):
 	add_author = ("INSERT INTO AUTHOR "
 		"(FNAME,LNAME,MAILING_ADDRESS,E_MAIL,AFFILIATION) "
@@ -22,7 +18,14 @@ def registerAuthor(con, firstname, lastname, address, email, affiliation):
 	print("Registering . . . ")
 	cursor.execute(add_author, data_author)
 	con.commit()
-	print("You have succesfully registered! You can now log in!")
+
+	getLastAuthorNumberQuery = ("SELECT AUTHOR.ID AS ID FROM AUTHOR ORDER BY AUTHOR.ID ASC;")
+	cursor.execute(getLastAuthorNumberQuery)
+	newNumber = 0
+	for (number,) in cursor:
+		newNumber = int(number)
+
+	print("You have succesfully registered as author #" + str(newNumber) + "! You can now log in!")
 
 def showStatus(con):
 	statusQuery = ("SELECT MANUSCRIPT.STATUS as Status, COUNT(*) as Count FROM MANUSCRIPT WHERE MANUSCRIPT.AUTHOR_ID=" + id +  " GROUP BY MANUSCRIPT.STATUS;")
@@ -96,7 +99,7 @@ def startAuthorShell(con, id):
 					statusRows += "".join(["{:<20}".format(col) for col in row]) + "\n"
 					count += 1
 				if (count == 0):
-					print("You have no manuscripts you pleb")
+					print("You have no manuscripts")
 				else:
 					print("".join(["{:<20}".format(col) for col in cursor.column_names]))
 					print("----------------------------")
@@ -108,30 +111,43 @@ def startAuthorShell(con, id):
 
 			elif (textArray[0] == "retract"):
 				if (len(textArray) == 2):
-					answer = raw_input('Are you sure you want to retract manuscript ' + textArray[1] + '? (yes/no)')
-					if (answer == "yes"):
 
-						# delete in proper order
-						# DELETE FROM CODE_GROUP;
-						# DELETE FROM REVIEWER_GROUP;
-						# DELETE FROM SECONDARY_AUTHOR;
-						# DELETE FROM MANUSCRIPT;
-						# DELETE FROM EDITOR;
-						# DELETE FROM RI_CODE;
-						# DELETE FROM AUTHOR;
-						# DELETE FROM MANUSCRIPT;
-						# DELETE FROM JOURNAL_ISSUE;
-						# DELETE FROM REVIEW;
-						# DELETE FROM REVIEWER;
-						deleteQuery1 = ("DELETE FROM REVIEWER_GROUP WHERE MANUSCRIPT_NUMBER=" + textArray[1] + ";")
-						deleteQuery2 = ("DELETE FROM SECONDARY_AUTHOR WHERE MANUSCRIPT_NUMBER=" + textArray[1] + ";")
-						deleteQuery3 = ("DELETE FROM MANUSCRIPT WHERE NUMBER=" + textArray[1] + ";")
-						deleteQuery4 = ("DELETE FROM REVIEW WHERE MANUSCRIPT_NUMBER=" + textArray[1] + ";")
-						cursor.execute(deleteQuery1)
-						cursor.execute(deleteQuery2)
-						cursor.execute(deleteQuery3)
-						cursor.execute(deleteQuery4)
-						con.commit()
+					checkPermissionQuery = ("SELECT MANUSCRIPT.AUTHOR_ID as AuthorID FROM MANUSCRIPT WHERE MANUSCRIPT.NUMBER=" + textArray[1] + ";")
+					cursor = con.cursor()
+					cursor.execute(checkPermissionQuery)
+
+					realAuthorID = 0
+					for (AuthorID,) in cursor:
+						realAuthorID = int(AuthorID)
+					print (realAuthorID , id)
+
+					if (int(realAuthorID) != int(id)):
+						print("You cannot retract a manuscript that you did not submit or aren't the primary author for!")
+					elif (int(realAuthorID) == int(id)):
+						answer = raw_input('Are you sure you want to retract manuscript ' + textArray[1] + '? (yes/no)')
+						if (answer == "yes"):
+
+							# delete in proper order
+							# DELETE FROM CODE_GROUP;
+							# DELETE FROM REVIEWER_GROUP;
+							# DELETE FROM SECONDARY_AUTHOR;
+							# DELETE FROM MANUSCRIPT;
+							# DELETE FROM EDITOR;
+							# DELETE FROM RI_CODE;
+							# DELETE FROM AUTHOR;
+							# DELETE FROM MANUSCRIPT;
+							# DELETE FROM JOURNAL_ISSUE;
+							# DELETE FROM REVIEW;
+							# DELETE FROM REVIEWER;
+							deleteQuery1 = ("DELETE FROM REVIEWER_GROUP WHERE MANUSCRIPT_NUMBER=" + textArray[1] + ";")
+							deleteQuery2 = ("DELETE FROM SECONDARY_AUTHOR WHERE MANUSCRIPT_NUMBER=" + textArray[1] + ";")
+							deleteQuery3 = ("DELETE FROM MANUSCRIPT WHERE NUMBER=" + textArray[1] + ";")
+							deleteQuery4 = ("DELETE FROM REVIEW WHERE MANUSCRIPT_NUMBER=" + textArray[1] + ";")
+							cursor.execute(deleteQuery1)
+							cursor.execute(deleteQuery2)
+							cursor.execute(deleteQuery3)
+							cursor.execute(deleteQuery4)
+							con.commit()
 
 			elif (textArray[0] == "submit"):
 
@@ -276,6 +292,9 @@ def startAuthorShell(con, id):
 
 				else:
 					print("ERROR: Incorrect command syntax. Please make sure your command is appropriate as documented in the READ.ME. Thanks!")
+			else:
+					print("ERROR: Incorrect command syntax. Please make sure your command is appropriate as documented in the READ.ME. Thanks!")
+
 
 	except mysql.connector.Error as e:
 		print("SQL Error: {0}".format(e.msg))

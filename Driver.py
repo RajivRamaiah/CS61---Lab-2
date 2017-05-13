@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
 				if (textArray[1] == "editor"):
 					print("REGISTERING EDITOR")
-					registerEditor()
+					registerEditor(con, textArray[2], textArray[3])
 
 				if (textArray[1] == "reviewer"):
 					print("REGISTERING REVIEWER")
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
 				if (textArray[1] == "editor"):
 					print("LOGIN EDITOR")
-					startEditorShell()
+					startEditorShell(con, textArray[2])
 
 				if (textArray[1] == "reviewer"):
 					print("LOGIN REVIEWER")
