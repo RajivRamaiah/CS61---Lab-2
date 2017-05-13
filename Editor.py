@@ -162,7 +162,9 @@ def startEditorShell(con, id):
 					continue
 			elif (textArray[0] == "schedule"):
 				if (len(textArray) == 4):
+					exit = 0
 
+					#check its been typeset
 					checkManuscriptStatus = ("SELECT MANUSCRIPT.STATUS as Status FROM MANUSCRIPT WHERE MANUSCRIPT.NUMBER=" + textArray[1] + ";")
 					cursor = con.cursor()
 					cursor.execute(checkManuscriptStatus)
@@ -172,8 +174,118 @@ def startEditorShell(con, id):
 						status = str(Status)
 					print (status , textArray[1])
 
+					if (status != "Typeset"):
+						print("You cannot schedule a manuscript that hasn't been typeset yet! Trying this again could result in your expulsion as an editor. . .")
+						continue
+
+					print("Issue is in proper status = typeset")
 
 
+					checkIfJournalPublished = ("SELECT JOURNAL_ISSUE.DATE_PUBLISHED as DatePubl FROM JOURNAL_ISSUE WHERE YEAR=" + textArray[2] + " AND PERIOD=" + textArray[3] + ";")
+					cursor = con.cursor()
+					cursor.execute(checkIfJournalPublished)
+
+					isPublished = 0
+					for (DatePubl, ) in cursor:
+						if(DatePubl != None):
+							isPublished += 1
+					if (isPublished == 1):
+						print("ERROR: This issue has already been published. You cannot schedule a manuscript for an issue already published!")
+						exit = 1
+					if (exit == 1):
+						continue
+
+					print("journal to schedule for hasn't been published!")
+
+
+					# Check pages aren't greater than 100
+					sumPages = 0
+					checkManuscriptPages = ("SELECT MANUSCRIPT.NUMBER_OF_PAGES as Pages FROM MANUSCRIPT WHERE MANUSCRIPT.NUMBER=" + textArray[1] + ";")
+					cursor = con.cursor()
+					cursor.execute(checkManuscriptPages)
+
+					for (Pages,) in cursor:
+						sumPages += Pages
+
+
+					checkJournalPages = ("SELECT MANUSCRIPT.NUMBER_OF_PAGES as Pages FROM MANUSCRIPT WHERE MANUSCRIPT.JOURNAL_ISSUE_YEAR=" + textArray[2] + " AND MANUSCRIPT.JOURNAL_ISSUE_PERIOD=" + textArray[3] +";")
+					cursor = con.cursor()
+					cursor.execute(checkJournalPages)
+
+					
+					for (Pages,) in cursor:
+						sumPages += int(Pages)
+
+					if(sumPages > 100):
+						print("ERROR: Scheduling this manuscript for the issue you selected would exceed an issue's 100 page limit!")
+						exit=1
+					if (exit == 1):
+						continue
+
+					# Check that issue doesn't exist
+					checkJournalExistence = ("SELECT * FROM JOURNAL_ISSUE WHERE YEAR=" + textArray[2] + " AND PERIOD=" + textArray[3] + ";")
+					cursor.execute(checkJournalExistence)
+
+					journalExists = 0
+					for row in cursor:
+						journalExists += 1
+
+
+					if (journalExists == 0):
+						addIssue = ("INSERT INTO JOURNAL_ISSUE "
+							"(YEAR,PERIOD,DATE_PUBLISHED) "
+							"VALUES (%s, %s, %s)")
+						issueData = (textArray[2], textArray[3], None)
+						cursor.execute(addIssue, issueData)
+						con.commit()
+
+					updateManuscriptStatusToScheduled = ("UPDATE MANUSCRIPT SET STATUS='Scheduled', MANUSCRIPT.JOURNAL_ISSUE_YEAR='" + textArray[2] 
+						+ "', MANUSCRIPT.JOURNAL_ISSUE_PERIOD='" + textArray[3] + "' WHERE MANUSCRIPT.NUMBER=" + textArray[1] + ";")
+					cursor.execute(updateManuscriptStatusToScheduled)
+					con.commit()
+
+				else:
+					print("ERROR: Please enter a valid command. See the READ.ME documentation for help.")
+					continue
+
+
+			elif (textArray[0] == "publish"):
+				if (len(textArray) == 3):
+					receivedTime = datetime.now().replace(microsecond=0)
+
+					# Check that journal has issues before publishing
+					checkIfEmpty = ("SELECT MANUSCRIPT.NUMBER as ManNumber FROM MANUSCRIPT WHERE MANUSCRIPT.JOURNAL_ISSUE_YEAR=" 
+						+ textArray[1] + " AND MANUSCRIPT.JOURNAL_ISSUE_PERIOD=" + textArray[2] + ";")
+					cursor = con.cursor()
+					cursor.execute(checkIfEmpty)
+
+					exists = 0;
+					for (ManNumber,) in cursor:
+						print(ManNumber)
+						exists += 1
+
+					if (exists >= 1):
+						checkIfJournalPublished = ("SELECT JOURNAL_ISSUE.DATE_PUBLISHED as DatePubl FROM JOURNAL_ISSUE WHERE YEAR=" + textArray[1] + " AND PERIOD=" + textArray[2] + ";")
+						cursor = con.cursor()
+						cursor.execute(checkIfJournalPublished)
+
+						isPublished = 0
+						for (DatePubl, ) in cursor:
+							if(DatePubl != None):
+								isPublished += 1
+						if (isPublished >= 1):
+							print("ERROR: This issue has already been published. You cannot schedule a manuscript for an issue already published!")
+							continue
+
+						updateIssue = ("UPDATE JOURNAL_ISSUE SET DATE_PUBLISHED='" +  str(receivedTime) + "' WHERE YEAR=" + textArray[1] +  " AND PERIOD= "  + textArray[2] + ";")
+						cursor.execute(updateIssue)
+						con.commit()
+						print("Succesfully published the issue!")
+					else:
+						print("ERROR: The issue you want to publish has no manuscripts assigned to it. This is unaccepable. . . Please schedule manuscripts for this issue before publishing.")
+				else:
+					print("ERROR: Please enter a valid command. See the READ.ME documentation for help.")
+					continue
 
 
 	except mysql.connector.Error as e:

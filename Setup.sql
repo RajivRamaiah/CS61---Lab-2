@@ -14,17 +14,17 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- Schema rajiv_db
 -- -----------------------------------------------------
 -- Reset Database
--- DROP DATABASE IF EXISTS `rajiv_db`;
+DROP DATABASE IF EXISTS `rajiv_db`;
 -- -- -----------------------------------------------------
 -- Schema rajiv_db
 -- -----------------------------------------------------
--- CREATE SCHEMA IF NOT EXISTS `rajiv_db` DEFAULT CHARACTER SET utf8 ;
+CREATE SCHEMA IF NOT EXISTS `rajiv_db` DEFAULT CHARACTER SET utf8 ;
 USE `rajiv_db` ;
 
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`EDITOR`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`EDITOR`;
+DROP TABLE IF EXISTS `rajiv_db`.`EDITOR`;
 -- 
 CREATE TABLE `rajiv_db`.`EDITOR` (
   `ID` INT NOT NULL AUTO_INCREMENT,
@@ -37,7 +37,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`REVIEWER`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`REVIEWER`;
+DROP TABLE IF EXISTS `rajiv_db`.`REVIEWER`;
 -- 
 CREATE TABLE `rajiv_db`.`REVIEWER` (
   `NUMBER` INT NOT NULL AUTO_INCREMENT,
@@ -53,7 +53,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`RI_CODE`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`RI_CODE`;
+DROP TABLE IF EXISTS `rajiv_db`.`RI_CODE`;
 -- 
 CREATE TABLE `rajiv_db`.`RI_CODE` (
   `RI_CODE` INT NOT NULL AUTO_INCREMENT,
@@ -65,7 +65,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`AUTHOR`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`AUTHOR`;
+DROP TABLE IF EXISTS `rajiv_db`.`AUTHOR`;
 -- 
 CREATE TABLE `rajiv_db`.`AUTHOR` (
   `ID` INT NOT NULL AUTO_INCREMENT,
@@ -82,7 +82,7 @@ COMMENT = 'AUTH_MAILING_ADDRESS';
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`JOURNAL_ISSUE`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`JOURNAL_ISSUE`;
+DROP TABLE IF EXISTS `rajiv_db`.`JOURNAL_ISSUE`;
 -- 
 CREATE TABLE `rajiv_db`.`JOURNAL_ISSUE` (
   `YEAR` INT NOT NULL,
@@ -95,7 +95,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`MANUSCRIPT`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`MANUSCRIPT`;
+DROP TABLE IF EXISTS `rajiv_db`.`MANUSCRIPT`;
 -- 
 CREATE TABLE `rajiv_db`.`MANUSCRIPT` (
   `NUMBER` INT NOT NULL AUTO_INCREMENT,
@@ -143,7 +143,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`REVIEW`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`REVIEW`;
+DROP TABLE IF EXISTS `rajiv_db`.`REVIEW`;
 -- 
 CREATE TABLE `rajiv_db`.`REVIEW` (
   `REVIEWER_NUMBER` INT NOT NULL,
@@ -166,7 +166,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`SECONDARY_AUTHOR`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`SECONDARY_AUTHOR`;
+DROP TABLE IF EXISTS `rajiv_db`.`SECONDARY_AUTHOR`;
 -- 
 CREATE TABLE `rajiv_db`.`SECONDARY_AUTHOR` (
   `MANUSCRIPT_NUMBER` INT NOT NULL,
@@ -186,7 +186,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`REVIEWER_GROUP`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`REVIEWER_GROUP`;
+DROP TABLE IF EXISTS `rajiv_db`.`REVIEWER_GROUP`;
 -- 
 CREATE TABLE `rajiv_db`.`REVIEWER_GROUP` (
   `MANUSCRIPT_NUMBER` INT NOT NULL,
@@ -209,7 +209,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `rajiv_db`.`CODE_GROUP`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`CODE_GROUP`;
+DROP TABLE IF EXISTS `rajiv_db`.`CODE_GROUP`;
 -- 
 CREATE TABLE `rajiv_db`.`CODE_GROUP` (
   `REVIEWER_NUMBER` INT NOT NULL,
@@ -432,9 +432,9 @@ INSERT INTO MANUSCRIPT (NUMBER, TITLE, STATUS, CONTENT, DATE_RECEIVED, RI_CODE, 
   (5,"Title 5","Accepted","asdf","2017-03-10 05:14:30",51,3,2,NULL,NULL,"2016-05-16 09:57:47",NULL,NULL,NULL),
   (6,"Title 6","Published","asdf","2018-03-27 03:55:25",12,4,1,53,4,"2017-01-25 18:46:49",33,1990,3),
   (7,"Title 7","Rejected","asdf","2016-06-18 05:53:47",39,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
-  (8,"Title 8","Typeset","asdf","2016-12-10 01:04:32",77,4,1,NULL,NULL,"2018-04-05 18:31:52",NULL,NULL,NULL),
+  (8,"Title 8","Typeset","asdf","2016-12-10 01:04:32",77,4,1,NULL,NULL,"2018-04-05 18:31:52",20,NULL,NULL),
   (9,"Title 9","Rejected","asdf","2017-09-02 16:26:54",92,3,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
-  (10,"Title 10","Typeset","asdf","2018-02-19 08:40:03",63,4,2,NULL,NULL,"2016-09-06 12:15:53",NULL,NULL,NULL),
+  (10,"Title 10","Typeset","asdf","2018-02-19 08:40:03",63,4,2,NULL,NULL,"2016-09-06 12:15:53",75,NULL,NULL),
   (11,"Title 11","Published","asdf","2017-11-29 00:11:54",78,4,1,31,7,"2017-08-27 21:15:58",25,1995,4),
   (12,"Title 12","Received","asdf","2018-04-24 15:28:51",17,1,3,NULL,NULL,NULL,NULL,NULL,NULL),
   (13,"Title 13","Received","asdf","2018-04-17 21:53:33",1,4,3,NULL,NULL,NULL,NULL,NULL,NULL),
@@ -442,7 +442,7 @@ INSERT INTO MANUSCRIPT (NUMBER, TITLE, STATUS, CONTENT, DATE_RECEIVED, RI_CODE, 
   (15,"Title 15","Published","asdf","2017-07-21 15:00:04",36,1,2,284,0,"2016-07-24 21:00:42",12,2007,4),
   (16,"Title 16","Published","asdf","2017-08-14 05:53:38",9,1,1,436,3,"2018-03-25 10:28:41",32,2007,4),
   (17,"Title 17","Published","asdf","2017-11-24 18:04:13",104,2,1,290,9,"2017-01-14 23:26:35",37,2007,4),
-  (18,"Title 18","Typeset","asdf","2018-01-04 14:05:26",43,4,3,NULL,NULL,"2016-08-15 21:08:43",NULL,NULL,NULL),
+  (18,"Title 18","Typeset","asdf","2018-01-04 14:05:26",43,4,3,NULL,NULL,"2016-08-15 21:08:43",75,NULL,NULL),
   (19,"Title 19","Under Review","asdf","2017-10-09 22:58:27",79,4,3,NULL,NULL,NULL,NULL,NULL,NULL),
   (20,"Title 20","Scheduled","asdf","2017-02-22 02:13:59",56,2,3,434,6,"2017-12-05 19:32:37",11,2009,4),
   (21,"Title 21","Received","asdf","2017-03-03 18:02:50",61,1,2,NULL,NULL,NULL,NULL,NULL,NULL),

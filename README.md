@@ -23,3 +23,5 @@ add a check to ensure editors can only work on their own manuscripts
 we do not set a timestamp when manuscript is rejected, as it wasn't included in the domain description originally.
 
 issue requires issue year and period not just issue for editor shell
+
+add checks to make sure status changes follow the correct sequence like accept->typeset->schedule->publish
