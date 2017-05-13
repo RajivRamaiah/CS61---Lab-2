@@ -15,3 +15,11 @@ this can be updated if when they submit a new paper as well.
 submitted = receive for us
 
 secondary authors must have a first and last name separated by a space
+
+add a check to make sure that when assigning to a reviewer they have the ri code to handle the manuscript
+add a check to ensure editors can only work on their own manuscripts
+
+
+we do not set a timestamp when manuscript is rejected, as it wasn't included in the domain description originally.
+
+issue requires issue year and period not just issue for editor shell
