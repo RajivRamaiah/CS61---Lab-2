@@ -46,25 +46,43 @@ def registerAuthor(con, firstname, lastname, address, email, affiliation, MASTER
 
 	print("Succes! Your password has been set. You can now log in!")
 
+def showStatus(con, id):
 
-def showStatus(con):
-	statusQuery = ("SELECT MANUSCRIPT.STATUS as Status, COUNT(*) as Count FROM MANUSCRIPT WHERE MANUSCRIPT.AUTHOR_ID=" + id +  " GROUP BY MANUSCRIPT.STATUS;")
-	cursor2 = con.cursor()
-	cursor2.execute(statusQuery)
-
-
+	statusQuery = ("SELECT MANUSCRIPT.STATUS as Status, COUNT(*) as Count FROM MANUSCRIPT WHERE MANUSCRIPT.AUTHOR_ID=" + id +  " GROUP BY MANUSCRIPT.STATUS ORDER BY FIELD(MANUSCRIPT.STATUS, 'Received', 'Under Review', 'Rejected', 'Accepted', 'Typeset', 'Scheduled', 'Published');")
+	cursor = con.cursor()
+	cursor.execute(statusQuery)
+	print("Below, you will find the number of manuscripts in each phase \nof review (i.e status) that are under your guidance:")
+	print()
 	# iterate through results
 	statusRows = ""
 	count = 0
-	for row in cursor2:
+	for row in cursor:
+		array = ["{}".format(col) for col in row]
+		statusRows += array[1] + " " + array [0] + ". "
+		count += 1
+	if (count == 0):
+		print("You have no manuscripts!")
+	else:
+		print(statusRows)
+	print()
+	print("Below, you will also find a table showing the manuscript \nnumber corresponding to the status that manuscript is in:")
+	print()
+	statusQuery = ("SELECT MANUSCRIPT.NUMBER as ManuscriptNumber, MANUSCRIPT.STATUS as Status FROM MANUSCRIPT WHERE MANUSCRIPT.AUTHOR_ID=" + id +  " ORDER BY FIELD(MANUSCRIPT.STATUS, 'Received', 'Under Review', 'Rejected', 'Accepted', 'Typeset', 'Scheduled', 'Published');")
+	cursor.execute(statusQuery)
+
+	statusRows = ""
+	count = 0
+	for row in cursor:
 		statusRows += "".join(["{:<20}".format(col) for col in row]) + "\n"
 		count += 1
 	if (count == 0):
 		print("You have no manuscripts!")
 	else:
-		print("".join(["{:<20}".format(col) for col in cursor2.column_names]))
+		print("".join(["{:<20}".format(col) for col in cursor.column_names]))
 		print("----------------------------")
 		print(statusRows)
+
+
 
 def startAuthorShell(con, id):
 
@@ -78,24 +96,7 @@ def startAuthorShell(con, id):
 			print("Hello {} {}. Here is your address: {}".format(FirstName, LastName, Address))
 			print()
 
-		statusQuery = ("SELECT MANUSCRIPT.STATUS as Status, COUNT(*) as Count FROM MANUSCRIPT WHERE MANUSCRIPT.AUTHOR_ID=" + id +  " GROUP BY MANUSCRIPT.STATUS;")
-
-		cursor.execute(statusQuery)
-
-
-		# iterate through results
-		statusRows = ""
-		count = 0
-		for row in cursor:
-			statusRows += "".join(["{:<20}".format(col) for col in row]) + "\n"
-			count += 1
-		if (count == 0):
-			print("You have no manuscripts!")
-		else:
-			print("".join(["{:<20}".format(col) for col in cursor.column_names]))
-			print("----------------------------")
-			print(statusRows)
-
+		showStatus(con, id)
 
 		loop = True
 		while loop:
@@ -103,23 +104,11 @@ def startAuthorShell(con, id):
 			text = raw_input('What would you like to do next? ')
 			textArray = text.split('|')
 			print()
-			print(textArray)
+			# print(textArray)
 			print()
 
 			if (textArray[0] == "status"):
-				cursor.execute(statusQuery)
-				# iterate through results
-				statusRows = ""
-				count = 0
-				for row in cursor:
-					statusRows += "".join(["{:<20}".format(col) for col in row]) + "\n"
-					count += 1
-				if (count == 0):
-					print("You have no manuscripts")
-				else:
-					print("".join(["{:<20}".format(col) for col in cursor.column_names]))
-					print("----------------------------")
-					print(statusRows)
+				showStatus(con, id) 
 
 			elif (textArray[0] == "logout"):
 				print("You have been logged out. Have a great day!")

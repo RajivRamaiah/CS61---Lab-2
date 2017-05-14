@@ -24,7 +24,7 @@ if __name__ == "__main__":
 			text = raw_input('Enter a command: ')
 			textArray = text.split('|')
 			print()
-			print(textArray)
+			# print(textArray)
 			print()
 
 			# REGISTER
@@ -68,7 +68,6 @@ if __name__ == "__main__":
 							decryptedPassword = PASSWORD
 
 						cursor.close()
-						print(userpass, decryptedPassword)
 						if(userpass == decryptedPassword):
 							print("Loging In . . .")
 							time.sleep(1)

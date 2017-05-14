@@ -48,6 +48,47 @@ def registerEditor(con, fname, lname, Master_Key):
 
 	print("Succes! Your password has been set. You can now log in!")
 
+
+def showStatus(con, id):
+
+	statusQuery = ("SELECT MANUSCRIPT.STATUS as Status, COUNT(*) as Count FROM MANUSCRIPT WHERE MANUSCRIPT.EDITOR_ID=" + id +  " GROUP BY MANUSCRIPT.STATUS ORDER BY FIELD(MANUSCRIPT.STATUS, 'Received', 'Under Review', 'Rejected', 'Accepted', 'Typeset', 'Scheduled', 'Published');")
+	cursor = con.cursor()
+	cursor.execute(statusQuery)
+	print("Below, you will find the number of manuscripts in each phase \nof review (i.e status) that are under your guidance:")
+	print()
+	# iterate through results
+	statusRows = ""
+	count = 0
+	for row in cursor:
+		array = ["{}".format(col) for col in row]
+		statusRows += array[1] + " " + array [0] + ". "
+		# statusRows += "".join(["{:<20}".format(col) for col in row]) + "\n"
+		count += 1
+	if (count == 0):
+		print("You have no manuscripts!")
+	else:
+		# print("".join(["{:<20}".format(col) for col in cursor.column_names]))
+		# print("----------------------------")
+		print(statusRows)
+	print()
+	print("Below, you will also find a table showing the manuscript \nnumber corresponding to the status that manuscript is in:")
+	print()
+	statusQuery = ("SELECT MANUSCRIPT.NUMBER as ManuscriptNumber, MANUSCRIPT.STATUS as Status FROM MANUSCRIPT WHERE MANUSCRIPT.EDITOR_ID=" + id +  " ORDER BY FIELD(MANUSCRIPT.STATUS, 'Received', 'Under Review', 'Rejected', 'Accepted', 'Typeset', 'Scheduled', 'Published');")
+	cursor.execute(statusQuery)
+
+	statusRows = ""
+	count = 0
+	for row in cursor:
+		statusRows += "".join(["{:<20}".format(col) for col in row]) + "\n"
+		count += 1
+	if (count == 0):
+		print("You have no manuscripts!")
+	else:
+		print("".join(["{:<20}".format(col) for col in cursor.column_names]))
+		print("----------------------------")
+		print(statusRows)
+
+
 def startEditorShell(con, id):
 	try:
 		loop = True
@@ -68,31 +109,14 @@ def startEditorShell(con, id):
 			loop = False
 
 		if (loop == True):
-			statusQuery = ("SELECT MANUSCRIPT.STATUS as Status, COUNT(*) as Count FROM MANUSCRIPT WHERE MANUSCRIPT.EDITOR_ID=" + id +  " GROUP BY MANUSCRIPT.STATUS;")
-
-			cursor.execute(statusQuery)
-
-
-			# iterate through results
-			statusRows = ""
-			count = 0
-			for row in cursor:
-				statusRows += "".join(["{:<20}".format(col) for col in row]) + "\n"
-				count += 1
-			if (count == 0):
-				print("You have no manuscripts!")
-			else:
-				print("".join(["{:<20}".format(col) for col in cursor.column_names]))
-				print("----------------------------")
-				print(statusRows)
-
+			showStatus(con,id)
 
 		while loop:
 			print()
 			text = raw_input('What would you like to do next?	')
 			textArray = text.split('|')
 			print()
-			print(textArray)
+			# print(textArray)
 			print()
 
 			if (len(textArray) > 4):
@@ -100,20 +124,8 @@ def startEditorShell(con, id):
 				continue
 
 			if (textArray[0] == "status"):
-				print("The following table shows you the number of manuscripts \nunder your guidance and the status they are in:")
-				cursor.execute(statusQuery)
-				# iterate through results
-				statusRows = ""
-				count = 0
-				for row in cursor:
-					statusRows += "".join(["{:<20}".format(col) for col in row]) + "\n"
-					count += 1
-				if (count == 0):
-					print("You have no manuscripts")
-				else:
-					print("".join(["{:<20}".format(col) for col in cursor.column_names]))
-					print("----------------------------")
-					print(statusRows)
+
+				showStatus(con,id)
 
 			elif (textArray[0] == "logout"):
 				print("You have been logged out. Have a great day!")
@@ -152,23 +164,37 @@ def startEditorShell(con, id):
 						if(str(code) == str(CODE)):
 							validAssignment = 1
 
-
 					if (validAssignment == 1):
-						receivedTime = datetime.now().replace(microsecond=0)
 
-						addReviewerForManuscript = ("INSERT INTO REVIEWER_GROUP "
-							"(MANUSCRIPT_NUMBER,REVIEWER_NUMBER,DATE_MAN_SENT_FOR_REVIEW) "
-							"VALUES (%s, %s, %s)")
-						reviewerGroupData = (textArray[1], textArray[2], receivedTime)
-						# Insert new employee
-						cursor.execute(addReviewerForManuscript, reviewerGroupData)
-						con.commit() 
 
-						updateManuscriptStatusToUnderReview = ("UPDATE MANUSCRIPT SET STATUS='Under Review' WHERE MANUSCRIPT.NUMBER=" + textArray[1]+ ";")
-						cursor.execute(updateManuscriptStatusToUnderReview)
-						con.commit()
+						# check that reviewer hasn't already been assigned this manuscript
+						checkNotAssigned = ("SELECT REVIEWER_GROUP.MANUSCRIPT_NUMBER as ManNum, REVIEWER_GROUP.REVIEWER_NUMBER as RevNum FROM REVIEWER_GROUP WHERE REVIEWER_GROUP.MANUSCRIPT_NUMBER=" + textArray[1] +  " AND REVIEWER_GROUP.REVIEWER_NUMBER=" + textArray[2] + ";")
+						cursor.execute(checkNotAssigned)
 
-						print("Succesfully added a reviewer for manuscript #" + str(textArray[1]) + "!")
+						alreadyAssigned = 0
+						for (ManNum, RevNum, ) in cursor:
+							if (str(ManNum) == textArray[1] and str(RevNum) == textArray [2]):
+								alreadyAssigned = 1
+
+
+						if (alreadyAssigned == 0):
+							receivedTime = datetime.now().replace(microsecond=0)
+
+							addReviewerForManuscript = ("INSERT INTO REVIEWER_GROUP "
+								"(MANUSCRIPT_NUMBER,REVIEWER_NUMBER,DATE_MAN_SENT_FOR_REVIEW) "
+								"VALUES (%s, %s, %s)")
+							reviewerGroupData = (textArray[1], textArray[2], receivedTime)
+							# Insert new employee
+							cursor.execute(addReviewerForManuscript, reviewerGroupData)
+							con.commit() 
+
+							updateManuscriptStatusToUnderReview = ("UPDATE MANUSCRIPT SET STATUS='Under Review' WHERE MANUSCRIPT.NUMBER=" + textArray[1]+ ";")
+							cursor.execute(updateManuscriptStatusToUnderReview)
+							con.commit()
+
+							print("Succesfully added a reviewer for manuscript #" + str(textArray[1]) + "!")
+						else:
+							print("ERROR: Duplicate Assignment \nThe assignment already exists!")
 					else:
 						print("ERROR: Subject Mismatch \nYou cannot assign this manuscript to the reviewer. \nThe reviewer you selected is not specialized in the manuscript's subject matter")
 
@@ -391,6 +417,9 @@ def startEditorShell(con, id):
 				else:
 					print("ERROR: Please enter a valid command. See the READ.ME documentation for help.")
 					continue
+			else:
+				print("ERROR: Incorrect command syntax.")
+				continue
 
 
 	except mysql.connector.Error as e:

@@ -82,11 +82,32 @@ def registerReviewerWithThree(con, firstname, lastname, email, affiliation, RICo
 def showStatus(con, id):
 
 	statusQuery = ("SELECT MANUSCRIPT.STATUS as Status, COUNT(*) as Count FROM MANUSCRIPT NATURAL JOIN REVIEWER_GROUP "
-"WHERE MANUSCRIPT.NUMBER=REVIEWER_GROUP.MANUSCRIPT_NUMBER AND REVIEWER_GROUP.REVIEWER_NUMBER=" + id + " GROUP BY MANUSCRIPT.STATUS;")
+"WHERE MANUSCRIPT.NUMBER=REVIEWER_GROUP.MANUSCRIPT_NUMBER AND REVIEWER_GROUP.REVIEWER_NUMBER=" + id + " GROUP BY MANUSCRIPT.STATUS ORDER BY FIELD(MANUSCRIPT.STATUS, 'Received', 'Under Review', 'Rejected', 'Accepted', 'Typeset', 'Scheduled', 'Published');")
 	cursor = con.cursor()
 	cursor.execute(statusQuery)
-	print("The following table shows you the number of manuscripts \nunder your guidance separated by the status they are in:")
+	print("Below, you will find the number of manuscripts in each phase \nof review (i.e status) that are under your guidance:")
+	print()
 	# iterate through results
+	statusRows = ""
+	count = 0
+	for row in cursor:
+		array = ["{}".format(col) for col in row]
+		statusRows += array[1] + " " + array [0] + ". "
+		# statusRows += "".join(["{:<20}".format(col) for col in row]) + "\n"
+		count += 1
+	if (count == 0):
+		print("You have no manuscripts!")
+	else:
+		# print("".join(["{:<20}".format(col) for col in cursor.column_names]))
+		# print("----------------------------")
+		print(statusRows)
+	print()
+	print("Below, you will also find a table showing the manuscript \nnumber corresponding to the status that manuscript is in:")
+	print()
+	statusQuery = ("SELECT MANUSCRIPT.NUMBER as ManuscriptNumber, MANUSCRIPT.STATUS as Status FROM MANUSCRIPT NATURAL JOIN REVIEWER_GROUP "
+"WHERE MANUSCRIPT.NUMBER=REVIEWER_GROUP.MANUSCRIPT_NUMBER AND REVIEWER_GROUP.REVIEWER_NUMBER=" + id + " ORDER BY FIELD(MANUSCRIPT.STATUS, 'Received', 'Under Review', 'Rejected', 'Accepted', 'Typeset', 'Scheduled', 'Published');")
+	cursor.execute(statusQuery)
+
 	statusRows = ""
 	count = 0
 	for row in cursor:
@@ -114,7 +135,7 @@ def startReviewerShell(con, id):
 			text = raw_input('What would you like to do next?	')
 			textArray = text.split('|')
 			print()
-			print(textArray)
+			# print(textArray)
 			print()
 
 			if (textArray[0] == "status"):

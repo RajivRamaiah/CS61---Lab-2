@@ -23,16 +23,10 @@ This program can be extended to be a legitimate manuscript management system for
 - Only a maximum of 3 secondary author can be submitted along with a manuscript.
 - We did not implement blob on submit as stated was allowed by the Professor.
 - When registering an author, we do mailing address before email, and we allow them to submit a preliminary affiliation as well. This affiliation can be updated if or when they submit a new paper as well.
-- A status of `Submitted` is the same as `Received`
+- **A status of `Submitted` is the same as `Received`**
 - Secondary authors must have a first and last name separated by a space, and cannot have a middle name.
 - We do not set a timestamp when manuscript is rejected, as it wasn't included in the domain description originally.
 - While the specs show that an editor can schedule a manuscript using `schedule <manu#> <issue>`, issue requires issue year and period to be complete. Thus to include an issue in any query, you must use `schedule|<manu#>|<IssueYear|<IssuePeriod`
 - When scheduling, we make sure that the manuscript status is `Typeset`, not `Accepted` as is stated in the specs and contradicted in the domain description
 - For any editors/authors/reviewers in the system as a result of running Setup.sql, which is any user you don't register, their password is: `a`
 - We check to make sure that when assigning to a reviewer they have the RICode to handle the manuscript.
-
-
-
-add checks to make sure status changes follow the correct sequence like accept->typeset->schedule->publish
-
-only assign manuscript to reviewer if it hasn't been assigned
