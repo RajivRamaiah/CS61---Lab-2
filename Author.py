@@ -61,7 +61,7 @@ def showStatus(con, id):
 		statusRows += array[1] + " " + array [0] + ". "
 		count += 1
 	if (count == 0):
-		print("You have no manuscripts!")
+		print("Status: You have no manuscripts!")
 	else:
 		print(statusRows)
 	print()
@@ -98,9 +98,19 @@ def startAuthorShell(con, id):
 
 		showStatus(con, id)
 
+		print()
+		print("Commands at your service:")
+		print()
+		print("'status' -> Lists all manuscripts you are the primary author for \n as well as the status they are in.")
+		print()
+		print("'retract|<ManuscriptNumber' \n   -> Removes one of your manuscripts.")
+		print()
+		print("'submit|<title>|<Affiliation>|<RICode>|<author2>|<author3>|<author4>|<filename>' \n   -> Allows you to submit a manuscript")
+
 		loop = True
 		while loop:
 			print()
+			print("------------------------------------------------------------------------------------------")
 			text = raw_input('What would you like to do next? ')
 			textArray = text.split('|')
 			print()
@@ -155,148 +165,148 @@ def startAuthorShell(con, id):
 							con.commit()
 
 			elif (textArray[0] == "submit"):
+				try:
+					#find number of editors in system
+					numberOfEditors = 0
+					cursor = con.cursor()
+					editorCountQuery = ("SELECT COUNT(*) as Count FROM EDITOR;")
+					cursor.execute(editorCountQuery)
+					for (count,) in cursor:
+						numberOfEditors=int(count)
+					editorToAssign = random.randint(1,numberOfEditors)
 
-				#find number of editors in system
-				numberOfEditors = 0
-				cursor = con.cursor()
-				editorCountQuery = ("SELECT COUNT(*) as Count FROM EDITOR;")
-				cursor.execute(editorCountQuery)
-				for (count,) in cursor:
-					numberOfEditors=int(count)
-				editorToAssign = random.randint(1,numberOfEditors)
+					# submit <title> <Affiliation> <RICode> <author2> <author3> <author4> <filename>
+					receivedTime = datetime.now().replace(microsecond=0)
 
-				# submit <title> <Affiliation> <RICode> <author2> <author3> <author4> <filename>
-				receivedTime = datetime.now().replace(microsecond=0)
+					value = None
+					addManuscript = ("INSERT INTO MANUSCRIPT "
+						"(TITLE, STATUS, CONTENT, DATE_RECEIVED, RI_CODE, AUTHOR_ID, EDITOR_ID, PAGE_NUMBER_IN_ISSUE, ORDER_IN_ISSUE, " + 
+						"DATE_ACCEPTED, NUMBER_OF_PAGES, JOURNAL_ISSUE_YEAR, JOURNAL_ISSUE_PERIOD) "
+						"VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
-				value = None
-				addManuscript = ("INSERT INTO MANUSCRIPT "
-					"(TITLE, STATUS, CONTENT, DATE_RECEIVED, RI_CODE, AUTHOR_ID, EDITOR_ID, PAGE_NUMBER_IN_ISSUE, ORDER_IN_ISSUE, " + 
-					"DATE_ACCEPTED, NUMBER_OF_PAGES, JOURNAL_ISSUE_YEAR, JOURNAL_ISSUE_PERIOD) "
-					"VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+					addSecondaryAuthor = ("INSERT INTO SECONDARY_AUTHOR "
+						"(FNAME,LNAME,MANUSCRIPT_NUMBER,ORDER_IN_MANUSCRIPT) "
+						" VALUES (%s, %s, %s, %s)")
 
-				addSecondaryAuthor = ("INSERT INTO SECONDARY_AUTHOR "
-					"(FNAME,LNAME,MANUSCRIPT_NUMBER,ORDER_IN_MANUSCRIPT) "
-					" VALUES (%s, %s, %s, %s)")
+					if (len(textArray) == 8):
+						print("reached if statement 8")
 
-				if (len(textArray) == 8):
-					print("reached if statement 8")
+						updateAuthorAffiliation = ("UPDATE AUTHOR SET AFFILIATION= '" + textArray[2] + "' WHERE AUTHOR.ID=" + id + ";")
+						cursor.execute(updateAuthorAffiliation)
+						con.commit()
 
-					updateAuthorAffiliation = ("UPDATE AUTHOR SET AFFILIATION= '" + textArray[2] + "' WHERE AUTHOR.ID=" + id + ";")
-					cursor.execute(updateAuthorAffiliation)
-					con.commit()
-
-					manuscriptData = (textArray[1], "Received", textArray[7], receivedTime, textArray[3], id, editorToAssign, value, value, value, value, value, value, )
-					print("Submitting manuscript . . . ")
-					cursor.execute(addManuscript, manuscriptData)
-					con.commit()
-
-
-					getLastManuscriptNumberQuery = ("SELECT MANUSCRIPT.NUMBER AS Number FROM MANUSCRIPT ORDER BY MANUSCRIPT.NUMBER ASC;")
-					cursor.execute(getLastManuscriptNumberQuery)
-					newNumber = 0
-					for (number,) in cursor:
-						newNumber = int(number)
+						manuscriptData = (textArray[1], "Received", textArray[7], receivedTime, textArray[3], id, editorToAssign, value, value, value, value, value, value, )
+						print("Submitting manuscript . . . ")
+						cursor.execute(addManuscript, manuscriptData)
+						con.commit()
 
 
-					name = textArray[4].split(' ')
-					secondaryAuthorData = (name[0], name[1], newNumber, 1)
-					cursor.execute(addSecondaryAuthor, secondaryAuthorData)
-					con.commit()
-
-					name = textArray[5].split(' ')
-					secondaryAuthorData2 = (name[0], name[1], newNumber, 2)
-					cursor.execute(addSecondaryAuthor, secondaryAuthorData2)
-					con.commit()
-
-					name = textArray[6].split(' ')
-					secondaryAuthorData3 = (name[0], name[1], newNumber, 3)
-					cursor.execute(addSecondaryAuthor, secondaryAuthorData3)
-					con.commit()
-
-					print("You have succesfully submitted manuscript #" + str(newNumber) + "!!!")
-
-				elif (len(textArray) == 7):
-					print("reached if statement 7")
-
-					updateAuthorAffiliation = ("UPDATE AUTHOR SET AFFILIATION= '" + textArray[2] + "' WHERE AUTHOR.ID=" + id + ";")
-					cursor.execute(updateAuthorAffiliation)
-					con.commit()
-
-					manuscriptData = (textArray[1], "Received", textArray[6], receivedTime, textArray[3], id, editorToAssign, value, value, value, value, value, value)
-
-					print("Submitting manuscript . . . ")
-					cursor.execute(addManuscript, manuscriptData)
-					con.commit()
-
-					getLastManuscriptNumberQuery = ("SELECT MANUSCRIPT.NUMBER AS Number FROM MANUSCRIPT ORDER BY MANUSCRIPT.NUMBER ASC;")
-					cursor.execute(getLastManuscriptNumberQuery)
-					newNumber = 0
-					for (number,) in cursor:
-						newNumber = int(number)
-
-					name = textArray[4].split(' ')
-					secondaryAuthorData = (name[0], name[1], newNumber, 1)
-					cursor.execute(addSecondaryAuthor, secondaryAuthorData)
-					con.commit()
-
-					name = textArray[5].split(' ')
-					secondaryAuthorData2 = (name[0], name[1], newNumber, 2)
-					cursor.execute(addSecondaryAuthor, secondaryAuthorData2)
-					con.commit()
-
-					print("You have succesfully submitted manuscript #" + str(newNumber) + "!!!")
-
-				elif (len(textArray) == 6):
-					print("reached if statement 6")
-
-					updateAuthorAffiliation = ("UPDATE AUTHOR SET AFFILIATION= '" + textArray[2] + "' WHERE AUTHOR.ID=" + id + ";")
-					cursor.execute(updateAuthorAffiliation)
-					con.commit()
-
-					manuscriptData = (textArray[1], "Received", textArray[5], receivedTime, textArray[3], id, editorToAssign, value, value, value, value, value, value, )
-
-					print("Submitting manuscript . . . ")
-					cursor.execute(addManuscript, manuscriptData)
-					con.commit()
-
-					getLastManuscriptNumberQuery = ("SELECT MANUSCRIPT.NUMBER AS Number FROM MANUSCRIPT ORDER BY MANUSCRIPT.NUMBER ASC;")
-					cursor.execute(getLastManuscriptNumberQuery)
-					newNumber = 0
-					for (number,) in cursor:
-						newNumber = int(number)
-
-					name = textArray[4].split(' ')
-					secondaryAuthorData = (name[0], name[1], newNumber, 1)
-					cursor.execute(addSecondaryAuthor, secondaryAuthorData)
-					con.commit()
-
-					print("You have succesfully submitted manuscript #" + str(newNumber) + "!!!")
-
-				elif (len(textArray) == 5):
-					print("reached if statement 5")
-
-					updateAuthorAffiliation = ("UPDATE AUTHOR SET AFFILIATION= '" + textArray[2] + "' WHERE AUTHOR.ID=" + id + ";")
-					cursor.execute(updateAuthorAffiliation)
-					con.commit()
-
-					manuscriptData = (textArray[1], "Received", textArray[4], receivedTime, textArray[3], id, editorToAssign, value, value, value, value, value, value, )
-
-					# Insert new employee
-					print("Submitting manuscript . . . ")
-					cursor.execute(addManuscript, manuscriptData)
-					con.commit()
-
-					getLastManuscriptNumberQuery = ("SELECT MANUSCRIPT.NUMBER AS Number FROM MANUSCRIPT ORDER BY MANUSCRIPT.NUMBER ASC;")
-					cursor.execute(getLastManuscriptNumberQuery)
-					newNumber = 0
-					for (number,) in cursor:
-						newNumber = int(number)
-
-					print("You have succesfully submitted manuscript #" + str(newNumber) + "!!!")
+						getLastManuscriptNumberQuery = ("SELECT MANUSCRIPT.NUMBER AS Number FROM MANUSCRIPT ORDER BY MANUSCRIPT.NUMBER ASC;")
+						cursor.execute(getLastManuscriptNumberQuery)
+						newNumber = 0
+						for (number,) in cursor:
+							newNumber = int(number)
 
 
-				else:
-					print("ERROR: Incorrect command syntax. Please make sure your command is appropriate as documented in the READ.ME. Thanks!")
+						name = textArray[4].split(' ')
+						secondaryAuthorData = (name[0], name[1], newNumber, 1)
+						cursor.execute(addSecondaryAuthor, secondaryAuthorData)
+						con.commit()
+
+						name = textArray[5].split(' ')
+						secondaryAuthorData2 = (name[0], name[1], newNumber, 2)
+						cursor.execute(addSecondaryAuthor, secondaryAuthorData2)
+						con.commit()
+
+						name = textArray[6].split(' ')
+						secondaryAuthorData3 = (name[0], name[1], newNumber, 3)
+						cursor.execute(addSecondaryAuthor, secondaryAuthorData3)
+						con.commit()
+
+						print("You have succesfully submitted manuscript #" + str(newNumber) + "!!!")
+
+					elif (len(textArray) == 7):
+
+						updateAuthorAffiliation = ("UPDATE AUTHOR SET AFFILIATION= '" + textArray[2] + "' WHERE AUTHOR.ID=" + id + ";")
+						cursor.execute(updateAuthorAffiliation)
+						con.commit()
+
+						manuscriptData = (textArray[1], "Received", textArray[6], receivedTime, textArray[3], id, editorToAssign, value, value, value, value, value, value)
+
+						print("Submitting manuscript . . . ")
+						cursor.execute(addManuscript, manuscriptData)
+						con.commit()
+
+						getLastManuscriptNumberQuery = ("SELECT MANUSCRIPT.NUMBER AS Number FROM MANUSCRIPT ORDER BY MANUSCRIPT.NUMBER ASC;")
+						cursor.execute(getLastManuscriptNumberQuery)
+						newNumber = 0
+						for (number,) in cursor:
+							newNumber = int(number)
+
+						name = textArray[4].split(' ')
+						secondaryAuthorData = (name[0], name[1], newNumber, 1)
+						cursor.execute(addSecondaryAuthor, secondaryAuthorData)
+						con.commit()
+
+						name = textArray[5].split(' ')
+						secondaryAuthorData2 = (name[0], name[1], newNumber, 2)
+						cursor.execute(addSecondaryAuthor, secondaryAuthorData2)
+						con.commit()
+
+						print("You have succesfully submitted manuscript #" + str(newNumber) + "!!!")
+
+					elif (len(textArray) == 6):
+
+						updateAuthorAffiliation = ("UPDATE AUTHOR SET AFFILIATION= '" + textArray[2] + "' WHERE AUTHOR.ID=" + id + ";")
+						cursor.execute(updateAuthorAffiliation)
+						con.commit()
+
+						manuscriptData = (textArray[1], "Received", textArray[5], receivedTime, textArray[3], id, editorToAssign, value, value, value, value, value, value, )
+
+						print("Submitting manuscript . . . ")
+						cursor.execute(addManuscript, manuscriptData)
+						con.commit()
+
+						getLastManuscriptNumberQuery = ("SELECT MANUSCRIPT.NUMBER AS Number FROM MANUSCRIPT ORDER BY MANUSCRIPT.NUMBER ASC;")
+						cursor.execute(getLastManuscriptNumberQuery)
+						newNumber = 0
+						for (number,) in cursor:
+							newNumber = int(number)
+
+						name = textArray[4].split(' ')
+						secondaryAuthorData = (name[0], name[1], newNumber, 1)
+						cursor.execute(addSecondaryAuthor, secondaryAuthorData)
+						con.commit()
+
+						print("You have succesfully submitted manuscript #" + str(newNumber) + "!!!")
+
+					elif (len(textArray) == 5):
+
+						updateAuthorAffiliation = ("UPDATE AUTHOR SET AFFILIATION= '" + textArray[2] + "' WHERE AUTHOR.ID=" + id + ";")
+						cursor.execute(updateAuthorAffiliation)
+						con.commit()
+
+						manuscriptData = (textArray[1], "Received", textArray[4], receivedTime, textArray[3], id, editorToAssign, value, value, value, value, value, value, )
+
+						# Insert new employee
+						print("Submitting manuscript . . . ")
+						cursor.execute(addManuscript, manuscriptData)
+						con.commit()
+
+						getLastManuscriptNumberQuery = ("SELECT MANUSCRIPT.NUMBER AS Number FROM MANUSCRIPT ORDER BY MANUSCRIPT.NUMBER ASC;")
+						cursor.execute(getLastManuscriptNumberQuery)
+						newNumber = 0
+						for (number,) in cursor:
+							newNumber = int(number)
+
+						print("You have succesfully submitted manuscript #" + str(newNumber) + "!!!")
+
+
+					else:
+						print("ERROR: Incorrect command syntax. Please make sure your command is appropriate as documented in the READ.ME. Thanks!")
+				except mysql.connector.Error as e:
+					print("ERROR: No reviewer with subject matter expertise is enrolled to review this manuscript!")
+
 			else:
 					print("ERROR: Incorrect command syntax. Please make sure your command is appropriate as documented in the READ.ME. Thanks!")
 

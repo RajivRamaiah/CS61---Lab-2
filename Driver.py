@@ -19,8 +19,22 @@ if __name__ == "__main__":
 		con = mysql.connector.connect(host=SERVER,user=USERNAME,password=PASSWORD, database=DATABASE)
 
 		loop = True
+		FinalPassword = PASSWORD
+		print(FinalPassword)
 		while loop:
+			print(FinalPassword)
 			print()
+			print("Hello. Welcome to the manuscript management system. From here, you can register as an")
+			print("editor/author/reviewer or login if you already have an account as one of those users.")
+			print()
+			print("To register as an author, enter: 'register|author|<fname>|<lname>|<address>|<email>|<affiliation>'")
+			print("To register as an editor, enter: 'register|editor|<fname>|<lname>'")
+			print("To register as a reviewer, enter: 'register|reviewer|<fname>|<lname>|<affiliation>|<ricode1>|<ricode2>|<ricode3>'")
+			print()
+			print("To login, simply enter 'login|<usertype>|<userID>'")
+			print()
+
+
 			text = raw_input('Enter a command: ')
 			textArray = text.split('|')
 			print()
@@ -70,6 +84,7 @@ if __name__ == "__main__":
 						cursor.close()
 						if(userpass == decryptedPassword):
 							print("Loging In . . .")
+							print("------------------------------------------------------------------------------------------")
 							time.sleep(1)
 							print()
 
@@ -93,6 +108,7 @@ if __name__ == "__main__":
 						if(userpass == decryptedPassword):
 							print("Loging In . . .")
 							time.sleep(1)
+							print("------------------------------------------------------------------------------------------")
 							print()
 
 
@@ -130,6 +146,7 @@ if __name__ == "__main__":
 						cursor.close()
 						if(userpass == decryptedPassword):
 							print("Loging In . . .")
+							print("------------------------------------------------------------------------------------------")
 							time.sleep(2)
 							print()
 

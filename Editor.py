@@ -65,7 +65,7 @@ def showStatus(con, id):
 		# statusRows += "".join(["{:<20}".format(col) for col in row]) + "\n"
 		count += 1
 	if (count == 0):
-		print("You have no manuscripts!")
+		print("Status: You have no manuscripts!")
 	else:
 		# print("".join(["{:<20}".format(col) for col in cursor.column_names]))
 		# print("----------------------------")
@@ -113,6 +113,7 @@ def startEditorShell(con, id):
 
 		while loop:
 			print()
+			print("------------------------------------------------------------------------------------------")
 			text = raw_input('What would you like to do next?	')
 			textArray = text.split('|')
 			print()
