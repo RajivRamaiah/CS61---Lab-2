@@ -119,6 +119,7 @@ def startEditorShell(con, id):
 				print("You have been logged out. Have a great day!")
 				break
 
+			# assign <manu#> <reviewer id>
 			elif (textArray[0] == "assign"):
 				if (len(textArray) == 3):
 
@@ -134,22 +135,42 @@ def startEditorShell(con, id):
 						print("ERROR: Insufficient Permission. \nYou cannot alter a manuscript not assigned to you as an editor.")
 						continue
 
+					# Check that reviewer has the same RI Code as manuscript
+					getManuscriptRICode = ("SELECT MANUSCRIPT.RI_CODE as Code FROM MANUSCRIPT WHERE MANUSCRIPT.NUMBER=" + textArray[1] + ";")
+					cursor.execute(getManuscriptRICode)
 
-					receivedTime = datetime.now().replace(microsecond=0)
+					code = 0
+					for (Code, ) in cursor:
+						code = int(Code)
 
-					addReviewerForManuscript = ("INSERT INTO REVIEWER_GROUP "
-						"(MANUSCRIPT_NUMBER,REVIEWER_NUMBER,DATE_MAN_SENT_FOR_REVIEW) "
-						"VALUES (%s, %s, %s)")
-					reviewerGroupData = (textArray[1], textArray[2], receivedTime)
-					# Insert new employee
-					cursor.execute(addReviewerForManuscript, reviewerGroupData)
-					con.commit() 
+					getReviewerCodes = ("SELECT CODE_GROUP.RI_CODE AS CODE FROM CODE_GROUP WHERE CODE_GROUP.REVIEWER_NUMBER=" + textArray[2] + ";")
+					cursor.execute(getReviewerCodes)
 
-					updateManuscriptStatusToUnderReview = ("UPDATE MANUSCRIPT SET STATUS='Under Review' WHERE MANUSCRIPT.NUMBER=" + textArray[1]+ ";")
-					cursor.execute(updateManuscriptStatusToUnderReview)
-					con.commit()
+					validAssignment = 0
+					for (CODE, ) in cursor:
+						print(CODE, code)
+						if(str(code) == str(CODE)):
+							validAssignment = 1
 
-					print("Succesfully added a reviewer for manuscript #" + str(textArray[1]) + "!")
+
+					if (validAssignment == 1):
+						receivedTime = datetime.now().replace(microsecond=0)
+
+						addReviewerForManuscript = ("INSERT INTO REVIEWER_GROUP "
+							"(MANUSCRIPT_NUMBER,REVIEWER_NUMBER,DATE_MAN_SENT_FOR_REVIEW) "
+							"VALUES (%s, %s, %s)")
+						reviewerGroupData = (textArray[1], textArray[2], receivedTime)
+						# Insert new employee
+						cursor.execute(addReviewerForManuscript, reviewerGroupData)
+						con.commit() 
+
+						updateManuscriptStatusToUnderReview = ("UPDATE MANUSCRIPT SET STATUS='Under Review' WHERE MANUSCRIPT.NUMBER=" + textArray[1]+ ";")
+						cursor.execute(updateManuscriptStatusToUnderReview)
+						con.commit()
+
+						print("Succesfully added a reviewer for manuscript #" + str(textArray[1]) + "!")
+					else:
+						print("ERROR: Subject Mismatch \nYou cannot assign this manuscript to the reviewer. \nThe reviewer you selected is not specialized in the manuscript's subject matter")
 
 
 				else:

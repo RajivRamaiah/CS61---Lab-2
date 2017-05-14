@@ -78,10 +78,6 @@ def startAuthorShell(con, id):
 			print("Hello {} {}. Here is your address: {}".format(FirstName, LastName, Address))
 			print()
 
-		# Just shows the tables with manuscript and status
-		# statusQuery = ("SELECT MANUSCRIPT.NUMBER as ManuscriptNumber, MANUSCRIPT.TITLE as ManuscriptTitle, MANUSCRIPT.STATUS " + 
-		# 	"as ManuscriptStatus FROM MANUSCRIPT WHERE MANUSCRIPT.AUTHOR_ID=" + id + ";")
-
 		statusQuery = ("SELECT MANUSCRIPT.STATUS as Status, COUNT(*) as Count FROM MANUSCRIPT WHERE MANUSCRIPT.AUTHOR_ID=" + id +  " GROUP BY MANUSCRIPT.STATUS;")
 
 		cursor.execute(statusQuery)

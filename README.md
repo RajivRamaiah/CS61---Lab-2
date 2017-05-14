@@ -12,6 +12,8 @@ We have created a simple python driver that allows a user to interact with our m
 
 If you would like to test this on your own database, please run our Setup.sql file and then Triggers.sql file, and then run the program to have data ready to be altered. Or, add your own data from scratch using the program itself!
 
+This program can be extended to be a legitimate manuscript management system for any type of magazine or journal that requires authors to submit articles or papers for review and to be published based on similar criteria as put forward by the domain description from the link above.
+
 
 ## Assumptions and Deviations from Specs
 - To log in as an author, reviewer, or editor, use `login|<usertype>|<userID>`
@@ -27,14 +29,10 @@ If you would like to test this on your own database, please run our Setup.sql fi
 - While the specs show that an editor can schedule a manuscript using `schedule <manu#> <issue>`, issue requires issue year and period to be complete. Thus to include an issue in any query, you must use `schedule|<manu#>|<IssueYear|<IssuePeriod`
 - When scheduling, we make sure that the manuscript status is `Typeset`, not `Accepted` as is stated in the specs and contradicted in the domain description
 - For any editors/authors/reviewers in the system as a result of running Setup.sql, which is any user you don't register, their password is: `a`
-
+- We check to make sure that when assigning to a reviewer they have the RICode to handle the manuscript.
 
 
 
 add checks to make sure status changes follow the correct sequence like accept->typeset->schedule->publish
 
-add a check to make sure that when assigning to a reviewer they have the ri code to handle the manuscript
-
-
-check first if authors exist with passwords before letting them login, as well as editors and reviewers
-enter default passwords for initial data
+only assign manuscript to reviewer if it hasn't been assigned
