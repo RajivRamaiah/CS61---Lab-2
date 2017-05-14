@@ -12,7 +12,7 @@ We have created a simple python driver that allows a user to interact with our m
 
 If you would like to test this on your own database, please run our Setup.sql file and then Triggers.sql file, and then run the program to have data ready to be altered. Or, add your own data from scratch using the program itself!
 
-This program can be extended to be a legitimate manuscript management system for any type of magazine or journal that requires authors to submit articles or papers for review and to be published based on similar criteria as put forward by the domain description from the link above.
+This program can be extended to be a legitimate manuscript management system for any type of magazine or journal that requires authors to submit articles or papers for review and to be published based on similar criteria as put forward by the domain description from the link above. Further, as a result of the MASTER_KEY algorithm used to encrypt and decrypt passwords, the system can be used for multiple companies who want to manage journals or papers as long as they use a unique master key.
 
 ## AFTER STARTING THE PROGRAM
 

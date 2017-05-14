@@ -117,18 +117,36 @@ def showStatus(con, id):
 		print("You have no manuscripts!")
 	else:
 		print("".join(["{:<20}".format(col) for col in cursor.column_names]))
-		print("----------------------------")
+		print("----------------------------------")
 		print(statusRows)
 
 
 
 def startReviewerShell(con, id):
-	
-	showStatus(con, id)
 
 	try:
 		loop = True
 		cursor = con.cursor()
+
+		getName = ("SELECT FNAME, LNAME FROM REVIEWER WHERE NUMBER=" + id + ";")
+		cursor.execute(getName)
+
+		for (FNAME, LNAME, ) in cursor:
+			print("Hello " + FNAME + " " + LNAME + "!")
+			print()
+
+		showStatus(con, id)
+
+		print()
+		print("Commands at your service:")
+		print()
+		print("'resign|<reviewer#>' -> Allows you to remove yourself from service. ")
+		print()
+		print("'review|reject|<manu#>|<appropriateness#>|<clarity#>|<methodology#>|<contribution#>' \n   -> Allows you to submit a review for a manuscript to reject." )
+		print()
+		print("'review|accept|<manu#>|<appropriateness#>|<clarity#>|<methodology#>|<contribution#>' \n   -> Allows you to submit a review for a manuscript to accept." )
+		print()
+
 
 		while loop:
 			print()

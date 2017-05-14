@@ -111,6 +111,25 @@ def startEditorShell(con, id):
 		if (loop == True):
 			showStatus(con,id)
 
+			print()
+			print("Commands at your service:")
+			print()
+			print("'status' -> Lists all manuscripts you are the editor for \n as well as the status they are in.")
+			print()
+			print("'assign|<manu#>|<reviewer id>' -> assigns a manuscript to a reviewer.")
+			print()
+			print("'reject|<manu#>' -> Allows you to reject a manuscript from consideration.")
+			print()
+			print("'accept|<manu#>' -> Allows you to accept a manuscript to be scheduled and published later.")
+			print()
+			print("'typeset|<manu#>|<pp>' -> Enter the results of your typesetting, and the number of pages the manuscript will occupy.")
+			print()
+			print("'schedule|<manu#>|<issueyear>|<issueperiod>' -> Allows you to schedule a manuscript for an issue.")
+			print()
+			print("'publish|<issueyear>|<issueperiod>' -> Allows you to publish an issue for print.")
+			print()
+
+
 		while loop:
 			print()
 			print("------------------------------------------------------------------------------------------")

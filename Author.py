@@ -79,7 +79,7 @@ def showStatus(con, id):
 		print("You have no manuscripts!")
 	else:
 		print("".join(["{:<20}".format(col) for col in cursor.column_names]))
-		print("----------------------------")
+		print("-----------------------------------")
 		print(statusRows)
 
 

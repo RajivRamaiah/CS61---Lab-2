@@ -4,37 +4,44 @@ import sys								# for errors
 from Author import *
 from Editor import *
 from Reviewer import *
+import Config
 import time
 import getpass
 
-SERVER   = "sunapee.cs.dartmouth.edu"
-USERNAME = "rajiv" 
-PASSWORD = getpass.getpass(prompt='Please Enter The Database Master Key: ')
-DATABASE = "rajiv_db"
 
 if __name__ == "__main__":
 
 	try:
 		# initialize db connection
-		con = mysql.connector.connect(host=SERVER,user=USERNAME,password=PASSWORD, database=DATABASE)
+		con = mysql.connector.connect(host=Config.SERVER,user=Config.USERNAME,password=Config.PASSWORD, database=Config.DATABASE)
 
 		loop = True
-		FinalPassword = PASSWORD
-		print(FinalPassword)
+		FinalPassword = getpass.getpass(prompt='Please Enter The Database Master Key: ')
+		print()
+		print("Hello. Welcome to the manuscript management system. From here, you can register as an")
+		print("editor/author/reviewer or login if you already have an account as one of those users.")
+		print()
+		print("To register as an author, enter: 'register|author|<fname>|<lname>|<address>|<email>|<affiliation>'")
+		print("To register as an editor, enter: 'register|editor|<fname>|<lname>'")
+		print("To register as a reviewer, enter: 'register|reviewer|<fname>|<lname>|<affiliation>|<ricode1>|<ricode2>|<ricode3>'")
+		print()
+		print("To login, simply enter 'login|<usertype>|<userID>'")
+		print()
+
 		while loop:
-			print(FinalPassword)
-			print()
-			print("Hello. Welcome to the manuscript management system. From here, you can register as an")
-			print("editor/author/reviewer or login if you already have an account as one of those users.")
-			print()
-			print("To register as an author, enter: 'register|author|<fname>|<lname>|<address>|<email>|<affiliation>'")
-			print("To register as an editor, enter: 'register|editor|<fname>|<lname>'")
-			print("To register as a reviewer, enter: 'register|reviewer|<fname>|<lname>|<affiliation>|<ricode1>|<ricode2>|<ricode3>'")
-			print()
-			print("To login, simply enter 'login|<usertype>|<userID>'")
-			print()
+			# print()
+			# print("Hello. Welcome to the manuscript management system. From here, you can register as an")
+			# print("editor/author/reviewer or login if you already have an account as one of those users.")
+			# print()
+			# print("To register as an author, enter: 'register|author|<fname>|<lname>|<address>|<email>|<affiliation>'")
+			# print("To register as an editor, enter: 'register|editor|<fname>|<lname>'")
+			# print("To register as a reviewer, enter: 'register|reviewer|<fname>|<lname>|<affiliation>|<ricode1>|<ricode2>|<ricode3>'")
+			# print()
+			# print("To login, simply enter 'login|<usertype>|<userID>'")
+			# print()
 
-
+			print()
+			print("------------------------------------------------------------------------------------------")
 			text = raw_input('Enter a command: ')
 			textArray = text.split('|')
 			print()
@@ -46,24 +53,24 @@ if __name__ == "__main__":
 				if(len(textArray) == 7):
 					if (textArray[1] == "author"):
 						print("Registering Author . . .")
-						registerAuthor(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], PASSWORD)
+						registerAuthor(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], FinalPassword)
 
 				# register|editor|fname|lname
 				if (textArray[1] == "editor"):
 					print("Registering Editor . . .")
-					registerEditor(con, textArray[2], textArray[3], PASSWORD)
+					registerEditor(con, textArray[2], textArray[3], FinalPassword)
 
 				# register|reviewer|fname|lname|email|affiliation|one|two|three
 				if (textArray[1] == "reviewer"):
 					if (len(textArray) == 7):
 						print("Registering Reviewer . . .")
-						registerReviewerWithOne(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], PASSWORD)
+						registerReviewerWithOne(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], FinalPassword)
 					elif (len(textArray) == 8):
 						print("Registering Reviewer . . .")
-						registerReviewerWithTwo(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7], PASSWORD)
+						registerReviewerWithTwo(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7], FinalPassword)
 					elif (len(textArray) == 9):
 						print("Registering Reviewer . . .")
-						registerReviewerWithThree(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7], textArray[8], PASSWORD)
+						registerReviewerWithThree(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7], textArray[8], FinalPassword)
 					else:
 						print("ERROR: Must register reviewer with 1-3 RI Codes")
 
@@ -74,7 +81,7 @@ if __name__ == "__main__":
 						PASSWORD = "AA12345678" #must reset since it is lost after the first login
 						userpass = getpass.getpass(prompt='Please enter your password: ')
 						cursor = con.cursor()
-						checkPassword = ("SELECT AES_DECRYPT(CREDENTIALS.PASSWORD, '" + PASSWORD + "') AS PASSWORD FROM CREDENTIALS WHERE CREDENTIALS.USER_TYPE='AUTHOR' AND CREDENTIALS.ID=" + textArray[2] + ";")
+						checkPassword = ("SELECT AES_DECRYPT(CREDENTIALS.PASSWORD, '" + FinalPassword + "') AS PASSWORD FROM CREDENTIALS WHERE CREDENTIALS.USER_TYPE='AUTHOR' AND CREDENTIALS.ID=" + textArray[2] + ";")
 						cursor.execute(checkPassword)
 
 						decryptedPassword = ""
@@ -84,9 +91,8 @@ if __name__ == "__main__":
 						cursor.close()
 						if(userpass == decryptedPassword):
 							print("Loging In . . .")
+							time.sleep(0.5)
 							print("------------------------------------------------------------------------------------------")
-							time.sleep(1)
-							print()
 
 							startAuthorShell(con, textArray[2])
 						else:
@@ -97,7 +103,7 @@ if __name__ == "__main__":
 						PASSWORD = "AA12345678" #must reset since it is lost after the first login
 						userpass = getpass.getpass(prompt='Please enter your password: ')
 						cursor = con.cursor()
-						checkPassword = ("SELECT AES_DECRYPT(CREDENTIALS.PASSWORD, '" + PASSWORD + "') AS PASSWORD FROM CREDENTIALS WHERE CREDENTIALS.USER_TYPE='EDITOR' AND CREDENTIALS.ID=" + textArray[2] + ";")
+						checkPassword = ("SELECT AES_DECRYPT(CREDENTIALS.PASSWORD, '" + FinalPassword + "') AS PASSWORD FROM CREDENTIALS WHERE CREDENTIALS.USER_TYPE='EDITOR' AND CREDENTIALS.ID=" + textArray[2] + ";")
 						cursor.execute(checkPassword)
 
 						decryptedPassword = ""
@@ -107,9 +113,8 @@ if __name__ == "__main__":
 						cursor.close()
 						if(userpass == decryptedPassword):
 							print("Loging In . . .")
-							time.sleep(1)
+							time.sleep(0.5)
 							print("------------------------------------------------------------------------------------------")
-							print()
 
 
 							startEditorShell(con, textArray[2])
@@ -133,10 +138,9 @@ if __name__ == "__main__":
 							print("ERROR: Resigned Reviewer. \nYou cannot login since you have resigned. \nPlease contact the system administrator to reactivate your acount.")
 							continue
 
-						PASSWORD = "AA12345678" #must reset since it is lost after the first login
 						userpass = getpass.getpass(prompt='Please enter your password: ')
 						cursor = con.cursor()
-						checkPassword = ("SELECT AES_DECRYPT(CREDENTIALS.PASSWORD, '" + PASSWORD + "') AS PASSWORD FROM CREDENTIALS WHERE CREDENTIALS.USER_TYPE='REVIEWER' AND CREDENTIALS.ID=" + textArray[2] + ";")
+						checkPassword = ("SELECT AES_DECRYPT(CREDENTIALS.PASSWORD, '" + FinalPassword + "') AS PASSWORD FROM CREDENTIALS WHERE CREDENTIALS.USER_TYPE='REVIEWER' AND CREDENTIALS.ID=" + textArray[2] + ";")
 						cursor.execute(checkPassword)
 
 						decryptedPassword = ""
@@ -146,9 +150,8 @@ if __name__ == "__main__":
 						cursor.close()
 						if(userpass == decryptedPassword):
 							print("Loging In . . .")
+							time.sleep(0.5)
 							print("------------------------------------------------------------------------------------------")
-							time.sleep(2)
-							print()
 
 							startReviewerShell(con, textArray[2])
 						else:
