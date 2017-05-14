@@ -6,7 +6,7 @@ from Editor import *
 from Reviewer import *
 
 SERVER   = "sunapee.cs.dartmouth.edu"
-USERNAME = "rajiv" 
+USERNAME = "rajiv"
 PASSWORD = "AA12345678"# raw_input("Enter the MASTER_KEY: ")
 DATABASE = "rajiv_db"
 
@@ -40,7 +40,14 @@ if __name__ == "__main__":
 
 				if (textArray[1] == "reviewer"):
 					print("REGISTERING REVIEWER")
-					registerReviewer()
+                    if (len(textArray) == 5):
+                        registerReviewerWithOne(con, textArray[2], textArray[3], textArray[4])
+                    elif (len(textArray) == 6):
+                        registerReviewerWithTwo(con, textArray[2], textArray[3], textArray[4], textArray[5])
+                    elif (len(textArray) == 7):
+                        registerReviewerWithThree(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6])
+                    else:
+                        print("ERROR--Must register reviewer with 1-3 RI Codes")
 
 			# LOGIN
 			elif (textArray[0] == "login"):
@@ -73,4 +80,3 @@ if __name__ == "__main__":
 	con.close()
 
 	print("\nConnection terminated.", end='')
-

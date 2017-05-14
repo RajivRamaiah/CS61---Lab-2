@@ -11,22 +11,22 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema rajiv_db
+-- Schema dapoeso_db
 -- -----------------------------------------------------
 -- Reset Database
--- DROP DATABASE IF EXISTS `rajiv_db`;
+-- DROP DATABASE IF EXISTS `dapoeso_db`;
 -- -- -----------------------------------------------------
--- Schema rajiv_db
+-- Schema dapoeso_db
 -- -----------------------------------------------------
--- CREATE SCHEMA IF NOT EXISTS `rajiv_db` DEFAULT CHARACTER SET utf8 ;
-USE `rajiv_db` ;
+-- CREATE SCHEMA IF NOT EXISTS `dapoeso_db` DEFAULT CHARACTER SET utf8 ;
+USE `dapoeso_db` ;
 
 -- -----------------------------------------------------
--- Table `rajiv_db`.`EDITOR`
+-- Table `dapoeso_db`.`EDITOR`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`EDITOR`;
--- 
-CREATE TABLE `rajiv_db`.`EDITOR` (
+-- DROP TABLE IF EXISTS `dapoeso_db`.`EDITOR`;
+--
+CREATE TABLE `dapoeso_db`.`EDITOR` (
   `ID` INT NOT NULL AUTO_INCREMENT,
   `FNAME` VARCHAR(45) NOT NULL,
   `LNAME` VARCHAR(45) NOT NULL,
@@ -35,11 +35,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `rajiv_db`.`REVIEWER`
+-- Table `dapoeso_db`.`REVIEWER`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`REVIEWER`;
--- 
-CREATE TABLE `rajiv_db`.`REVIEWER` (
+-- DROP TABLE IF EXISTS `dapoeso_db`.`REVIEWER`;
+--
+CREATE TABLE `dapoeso_db`.`REVIEWER` (
   `NUMBER` INT NOT NULL AUTO_INCREMENT,
   `FNAME` VARCHAR(45) NOT NULL,
   `LNAME` VARCHAR(45) NOT NULL,
@@ -51,11 +51,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `rajiv_db`.`RI_CODE`
+-- Table `dapoeso_db`.`RI_CODE`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`RI_CODE`;
--- 
-CREATE TABLE `rajiv_db`.`RI_CODE` (
+-- DROP TABLE IF EXISTS `dapoeso_db`.`RI_CODE`;
+--
+CREATE TABLE `dapoeso_db`.`RI_CODE` (
   `RI_CODE` INT NOT NULL AUTO_INCREMENT,
   `SUBJECT` VARCHAR(64) NOT NULL,
   PRIMARY KEY (`RI_CODE`))
@@ -63,11 +63,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `rajiv_db`.`AUTHOR`
+-- Table `dapoeso_db`.`AUTHOR`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`AUTHOR`;
--- 
-CREATE TABLE `rajiv_db`.`AUTHOR` (
+-- DROP TABLE IF EXISTS `dapoeso_db`.`AUTHOR`;
+--
+CREATE TABLE `dapoeso_db`.`AUTHOR` (
   `ID` INT NOT NULL AUTO_INCREMENT,
   `FNAME` VARCHAR(45) NOT NULL,
   `LNAME` VARCHAR(45) NOT NULL,
@@ -80,11 +80,11 @@ COMMENT = 'AUTH_MAILING_ADDRESS';
 
 
 -- -----------------------------------------------------
--- Table `rajiv_db`.`JOURNAL_ISSUE`
+-- Table `dapoeso_db`.`JOURNAL_ISSUE`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`JOURNAL_ISSUE`;
--- 
-CREATE TABLE `rajiv_db`.`JOURNAL_ISSUE` (
+-- DROP TABLE IF EXISTS `dapoeso_db`.`JOURNAL_ISSUE`;
+--
+CREATE TABLE `dapoeso_db`.`JOURNAL_ISSUE` (
   `YEAR` INT NOT NULL,
   `PERIOD` INT NOT NULL,
   `DATE_PUBLISHED` DATETIME NULL,
@@ -93,11 +93,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `rajiv_db`.`MANUSCRIPT`
+-- Table `dapoeso_db`.`MANUSCRIPT`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`MANUSCRIPT`;
--- 
-CREATE TABLE `rajiv_db`.`MANUSCRIPT` (
+-- DROP TABLE IF EXISTS `dapoeso_db`.`MANUSCRIPT`;
+--
+CREATE TABLE `dapoeso_db`.`MANUSCRIPT` (
   `NUMBER` INT NOT NULL AUTO_INCREMENT,
   `TITLE` VARCHAR(45) NOT NULL,
   `STATUS` VARCHAR(45) NOT NULL,
@@ -119,33 +119,33 @@ CREATE TABLE `rajiv_db`.`MANUSCRIPT` (
   INDEX `fk_MANUSCRIPT_JOURNAL_ISSUE1_idx` (`JOURNAL_ISSUE_YEAR` ASC, `JOURNAL_ISSUE_PERIOD` ASC),
   CONSTRAINT `fk_MANUSCRIPT_RI_CODE1`
     FOREIGN KEY (`RI_CODE`)
-    REFERENCES `rajiv_db`.`RI_CODE` (`RI_CODE`)
+    REFERENCES `dapoeso_db`.`RI_CODE` (`RI_CODE`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_MANUSCRIPT_AUTHOR1`
     FOREIGN KEY (`AUTHOR_ID`)
-    REFERENCES `rajiv_db`.`AUTHOR` (`ID`)
+    REFERENCES `dapoeso_db`.`AUTHOR` (`ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_MANUSCRIPT_EDITOR1`
     FOREIGN KEY (`EDITOR_ID`)
-    REFERENCES `rajiv_db`.`EDITOR` (`ID`)
+    REFERENCES `dapoeso_db`.`EDITOR` (`ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_MANUSCRIPT_JOURNAL_ISSUE1`
     FOREIGN KEY (`JOURNAL_ISSUE_YEAR` , `JOURNAL_ISSUE_PERIOD`)
-    REFERENCES `rajiv_db`.`JOURNAL_ISSUE` (`YEAR` , `PERIOD`)
+    REFERENCES `dapoeso_db`.`JOURNAL_ISSUE` (`YEAR` , `PERIOD`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `rajiv_db`.`REVIEW`
+-- Table `dapoeso_db`.`REVIEW`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`REVIEW`;
--- 
-CREATE TABLE `rajiv_db`.`REVIEW` (
+-- DROP TABLE IF EXISTS `dapoeso_db`.`REVIEW`;
+--
+CREATE TABLE `dapoeso_db`.`REVIEW` (
   `REVIEWER_NUMBER` INT NOT NULL,
   `MANUSCRIPT_NUMBER` INT NOT NULL,
   `DATE_REVIEW_RECEIVED` DATETIME NOT NULL,
@@ -158,17 +158,17 @@ CREATE TABLE `rajiv_db`.`REVIEW` (
   INDEX `fk_REVIEW_REVIEWER1_idx` (`REVIEWER_NUMBER` ASC),
   CONSTRAINT `fk_REVIEW_REVIEWER1`
     FOREIGN KEY (`REVIEWER_NUMBER`)
-    REFERENCES `rajiv_db`.`REVIEWER` (`NUMBER`)
+    REFERENCES `dapoeso_db`.`REVIEWER` (`NUMBER`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `rajiv_db`.`SECONDARY_AUTHOR`
+-- Table `dapoeso_db`.`SECONDARY_AUTHOR`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`SECONDARY_AUTHOR`;
--- 
-CREATE TABLE `rajiv_db`.`SECONDARY_AUTHOR` (
+-- DROP TABLE IF EXISTS `dapoeso_db`.`SECONDARY_AUTHOR`;
+--
+CREATE TABLE `dapoeso_db`.`SECONDARY_AUTHOR` (
   `MANUSCRIPT_NUMBER` INT NOT NULL,
   `ORDER_IN_MANUSCRIPT` INT NOT NULL,
   `FNAME` VARCHAR(45) NOT NULL,
@@ -177,41 +177,41 @@ CREATE TABLE `rajiv_db`.`SECONDARY_AUTHOR` (
   INDEX `fk_SECONDARY_AUTHOR_MANUSCRIPT1_idx` (`MANUSCRIPT_NUMBER` ASC),
   CONSTRAINT `fk_SECONDARY_AUTHOR_MANUSCRIPT1`
     FOREIGN KEY (`MANUSCRIPT_NUMBER`)
-    REFERENCES `rajiv_db`.`MANUSCRIPT` (`NUMBER`)
+    REFERENCES `dapoeso_db`.`MANUSCRIPT` (`NUMBER`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `rajiv_db`.`REVIEWER_GROUP`
+-- Table `dapoeso_db`.`REVIEWER_GROUP`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`REVIEWER_GROUP`;
--- 
-CREATE TABLE `rajiv_db`.`REVIEWER_GROUP` (
+-- DROP TABLE IF EXISTS `dapoeso_db`.`REVIEWER_GROUP`;
+--
+CREATE TABLE `dapoeso_db`.`REVIEWER_GROUP` (
   `MANUSCRIPT_NUMBER` INT NOT NULL,
   `REVIEWER_NUMBER` INT NOT NULL,
   `DATE_MAN_SENT_FOR_REVIEW` DATETIME NOT NULL,
   PRIMARY KEY (`MANUSCRIPT_NUMBER`, `REVIEWER_NUMBER`),
   CONSTRAINT `fk_MANUSCRIPT_has_REVIEWER_MANUSCRIPT1`
     FOREIGN KEY (`MANUSCRIPT_NUMBER`)
-    REFERENCES `rajiv_db`.`MANUSCRIPT` (`NUMBER`)
+    REFERENCES `dapoeso_db`.`MANUSCRIPT` (`NUMBER`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_MANUSCRIPT_has_REVIEWER_REVIEWER1`
     FOREIGN KEY (`REVIEWER_NUMBER`)
-    REFERENCES `rajiv_db`.`REVIEWER` (`NUMBER`)
+    REFERENCES `dapoeso_db`.`REVIEWER` (`NUMBER`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `rajiv_db`.`CODE_GROUP`
+-- Table `dapoeso_db`.`CODE_GROUP`
 -- -----------------------------------------------------
--- DROP TABLE IF EXISTS `rajiv_db`.`CODE_GROUP`;
--- 
-CREATE TABLE `rajiv_db`.`CODE_GROUP` (
+-- DROP TABLE IF EXISTS `dapoeso_db`.`CODE_GROUP`;
+--
+CREATE TABLE `dapoeso_db`.`CODE_GROUP` (
   `REVIEWER_NUMBER` INT NOT NULL,
   `RI_CODE` INT NOT NULL,
   PRIMARY KEY (`REVIEWER_NUMBER`, `RI_CODE`),
@@ -219,12 +219,12 @@ CREATE TABLE `rajiv_db`.`CODE_GROUP` (
   INDEX `fk_REVIEWER_has_RI_CODE_REVIEWER1_idx` (`REVIEWER_NUMBER` ASC),
   CONSTRAINT `fk_REVIEWER_has_RI_CODE_REVIEWER1`
     FOREIGN KEY (`REVIEWER_NUMBER`)
-    REFERENCES `rajiv_db`.`REVIEWER` (`NUMBER`)
+    REFERENCES `dapoeso_db`.`REVIEWER` (`NUMBER`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_REVIEWER_has_RI_CODE_RI_CODE1`
     FOREIGN KEY (`RI_CODE`)
-    REFERENCES `rajiv_db`.`RI_CODE` (`RI_CODE`)
+    REFERENCES `dapoeso_db`.`RI_CODE` (`RI_CODE`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -264,21 +264,21 @@ ALTER TABLE MANUSCRIPT AUTO_INCREMENT = 1;
 ALTER TABLE RI_CODE AUTO_INCREMENT = 1;
 
 -- 3 editors
-INSERT INTO EDITOR (FNAME,LNAME) VALUES 
+INSERT INTO EDITOR (FNAME,LNAME) VALUES
   ("Fulton","Zahir"),
   ("Hunter","Yardley"),
   ("Todd","Clayton");
 
 
 -- 4 authors
-INSERT INTO AUTHOR (FNAME,LNAME,MAILING_ADDRESS,E_MAIL,AFFILIATION) VALUES 
+INSERT INTO AUTHOR (FNAME,LNAME,MAILING_ADDRESS,E_MAIL,AFFILIATION) VALUES
   ("George","Travis","546-220 Ac Av.","a.odio@augue.org","Magnis Dis LLC"),
   ("Dalton","Alfonso","434-6898 Lacus Avenue","Aenean.massa.Integer@dui.org","Aliquet Associates"),
   ("Gareth","Nehru","P.O. Box 174, 8982 A St.","et.malesuada@adipiscingelitEtiam.edu","Ut Semper Pretium Limited"),
   ("Elmo","Kasper","721-9959 Habitant Rd.","posuere.at.velit@Nullam.co.uk","Montes Inc.");
 
 -- 7 reviewers
-INSERT INTO REVIEWER (FNAME,LNAME,EMAIL,AFFILIATION,STATUS) VALUES 
+INSERT INTO REVIEWER (FNAME,LNAME,EMAIL,AFFILIATION,STATUS) VALUES
   ("Carter","Stuart","velit.in@vestibulumneque.org","Euismod In Foundation", "Resigned"),
   ("David","Amos","eleifend.Cras.sed@elitsed.com","Sodales At Industries", "Active"),
   ("Carlos","Gray","aliquet.vel@duinec.net","Suspendisse PC", "Active"),
@@ -287,7 +287,7 @@ INSERT INTO REVIEWER (FNAME,LNAME,EMAIL,AFFILIATION,STATUS) VALUES
   ("Ronan","Brenden","eu@purusNullamscelerisque.co.uk","Euismod Urna Nullam Ltd", "Active"),
   ("Chester","Jin","malesuada.id@scelerisque.ca","Aenean Euismod Mauris Ltd", "Active");
 
-INSERT INTO JOURNAL_ISSUE (YEAR,PERIOD,DATE_PUBLISHED) VALUES 
+INSERT INTO JOURNAL_ISSUE (YEAR,PERIOD,DATE_PUBLISHED) VALUES
   (1990,3,"2018-02-23 11:53:24"),
   (1995,4,"2017-09-22 00:06:36"),
   (2009,4,"2017-08-30 15:55:51"),
@@ -421,10 +421,10 @@ INSERT INTO RI_CODE (SUBJECT) VALUES
   ('Teletraffic engineering'),
   ('Usability engineering'),
   ('Web engineering'),
-  ('Systems engineering'); 
+  ('Systems engineering');
 
-INSERT INTO MANUSCRIPT (NUMBER, TITLE, STATUS, CONTENT, DATE_RECEIVED, RI_CODE, AUTHOR_ID, EDITOR_ID, PAGE_NUMBER_IN_ISSUE, ORDER_IN_ISSUE, DATE_ACCEPTED, 
-  NUMBER_OF_PAGES, JOURNAL_ISSUE_YEAR, JOURNAL_ISSUE_PERIOD) VALUES 
+INSERT INTO MANUSCRIPT (NUMBER, TITLE, STATUS, CONTENT, DATE_RECEIVED, RI_CODE, AUTHOR_ID, EDITOR_ID, PAGE_NUMBER_IN_ISSUE, ORDER_IN_ISSUE, DATE_ACCEPTED,
+  NUMBER_OF_PAGES, JOURNAL_ISSUE_YEAR, JOURNAL_ISSUE_PERIOD) VALUES
   (1,"Title 1","Under Review","asdf","2017-03-11 01:11:47",54,2,1,NULL,NULL,NULL,NULL,NULL,NULL),
   (2,"Title 2","Under Review","asdf","2017-10-14 00:47:42",113,2,3,NULL,NULL,NULL,NULL,NULL,NULL),
   (3,"Title 3","Under Review","asdf","2017-02-04 13:13:04",109,2,2,NULL,NULL,NULL,NULL,NULL,NULL),
@@ -458,7 +458,7 @@ INSERT INTO MANUSCRIPT (NUMBER, TITLE, STATUS, CONTENT, DATE_RECEIVED, RI_CODE, 
   (31,"Title 31","Under Review","asdf","2017-03-11 01:21:47",39,2,1,NULL,NULL,NULL,NULL,NULL,NULL);
 
 
-INSERT INTO REVIEWER_GROUP (MANUSCRIPT_NUMBER,REVIEWER_NUMBER,DATE_MAN_SENT_FOR_REVIEW) VALUES 
+INSERT INTO REVIEWER_GROUP (MANUSCRIPT_NUMBER,REVIEWER_NUMBER,DATE_MAN_SENT_FOR_REVIEW) VALUES
   (7,2,"2016-04-13 17:27:09"),
   (4,4,"2016-09-17 06:49:17"),
   (7,1,"2018-03-19 02:28:44"),
@@ -470,7 +470,7 @@ INSERT INTO REVIEWER_GROUP (MANUSCRIPT_NUMBER,REVIEWER_NUMBER,DATE_MAN_SENT_FOR_
   (5,5,"2018-04-09 02:06:54"),
   (31,7,"2016-04-19 01:38:04");
 
-INSERT INTO SECONDARY_AUTHOR (FNAME,LNAME,MANUSCRIPT_NUMBER,ORDER_IN_MANUSCRIPT) VALUES 
+INSERT INTO SECONDARY_AUTHOR (FNAME,LNAME,MANUSCRIPT_NUMBER,ORDER_IN_MANUSCRIPT) VALUES
   ("Kerry","Aladdin",7,6),
   ("Dalton","Alfonso",4,6),
   ("Quinn","Brent",2,2),
@@ -487,7 +487,7 @@ INSERT INTO SECONDARY_AUTHOR (FNAME,LNAME,MANUSCRIPT_NUMBER,ORDER_IN_MANUSCRIPT)
   ("Libby","Brock",7,4),
   ("Karina","Keith",21,7);
 
-INSERT INTO REVIEW (REVIEWER_NUMBER,MANUSCRIPT_NUMBER,DATE_REVIEW_RECEIVED,APPROPRIATENESS,CLARITY,METHODOLOGY,CONTRIBUTION,RECOMMENDATION) VALUES 
+INSERT INTO REVIEW (REVIEWER_NUMBER,MANUSCRIPT_NUMBER,DATE_REVIEW_RECEIVED,APPROPRIATENESS,CLARITY,METHODOLOGY,CONTRIBUTION,RECOMMENDATION) VALUES
   (2,7,"2017-10-22 21:18:41",10,2,5,5,"accept"),
   (4,4,"2017-09-08 11:19:59",1,8,2,3,"reject"),
   (1,7,"2018-01-27 05:49:38",5,2,7,6,"reject"),
@@ -498,7 +498,7 @@ INSERT INTO REVIEW (REVIEWER_NUMBER,MANUSCRIPT_NUMBER,DATE_REVIEW_RECEIVED,APPRO
   (4,2,"2017-05-07 20:40:21",5,1,2,9,"reject"),
   (5,5,"2017-11-16 01:10:40",6,8,4,10,"reject");
 
-INSERT INTO CODE_GROUP (REVIEWER_NUMBER,RI_CODE) VALUES 
+INSERT INTO CODE_GROUP (REVIEWER_NUMBER,RI_CODE) VALUES
   (1,94),
   (1,70),
   (1,51),
@@ -523,20 +523,20 @@ INSERT INTO CODE_GROUP (REVIEWER_NUMBER,RI_CODE) VALUES
 
 -- View: LeadAuthorManuscripts
 
--- For all authors, their basic information (name etc.) and the manuscript(s) 
--- for which they are the primary author (if any), along with the status of the manuscript(s). 
+-- For all authors, their basic information (name etc.) and the manuscript(s)
+-- for which they are the primary author (if any), along with the status of the manuscript(s).
 -- Results ordered by author last name and then by increasing submission timestamp. Permissions: Editor.
 
 -- COMMENTS
 -----------------------------------------------------------------------------------------------------------------
--- This view includes secondary authors with NULL values for Manuscript data since they are not primary authors. 
--- To change this, I can simply remove the UNION with the secondary author table. However, I chose to include 
+-- This view includes secondary authors with NULL values for Manuscript data since they are not primary authors.
+-- To change this, I can simply remove the UNION with the secondary author table. However, I chose to include
 -- this since it was the most literal interpretation of what was required for this view. Thanks!
 -----------------------------------------------------------------------------------------------------------------
 DROP VIEW IF EXISTS `LeadAuthorManuscripts`;
 
 CREATE VIEW `LeadAuthorManuscripts` AS
-  SELECT AUTHOR.FNAME AS AuthorFName, AUTHOR.LNAME AS AuthorLName, MANUSCRIPT.TITLE AS ManuscriptTitle, 
+  SELECT AUTHOR.FNAME AS AuthorFName, AUTHOR.LNAME AS AuthorLName, MANUSCRIPT.TITLE AS ManuscriptTitle,
   MANUSCRIPT.NUMBER AS ManuscriptNumber, MANUSCRIPT.STATUS AS ManuscriptStatus, MANUSCRIPT.DATE_RECEIVED AS ManuscriptSubmissionTimestamp
   FROM MANUSCRIPT INNER JOIN AUTHOR ON AUTHOR.ID=MANUSCRIPT.AUTHOR_ID
   UNION
@@ -549,32 +549,32 @@ CREATE VIEW `LeadAuthorManuscripts` AS
 
 -- View: AnyAuthorManuscripts
 
--- For all authors, their name and the manuscript(s) for which they are among the authors (if any), 
--- along with the status of the manuscript(s). Results ordered by author last name and then by increasing 
+-- For all authors, their name and the manuscript(s) for which they are among the authors (if any),
+-- along with the status of the manuscript(s). Results ordered by author last name and then by increasing
 -- submission timestamp. Permissions: Author, Editor.
 DROP VIEW IF EXISTS `AnyAuthorManuscripts`;
 
 CREATE VIEW `AnyAuthorManuscripts` AS
-  SELECT AUTHOR.FNAME AS AuthorFName, AUTHOR.LNAME AS AuthorLName, MANUSCRIPT.TITLE AS ManuscriptTitle, 
+  SELECT AUTHOR.FNAME AS AuthorFName, AUTHOR.LNAME AS AuthorLName, MANUSCRIPT.TITLE AS ManuscriptTitle,
   MANUSCRIPT.NUMBER AS ManuscriptNumber, MANUSCRIPT.STATUS AS ManuscriptStatus, MANUSCRIPT.DATE_RECEIVED AS ManuscriptSubmissionTimestamp
   FROM MANUSCRIPT INNER JOIN AUTHOR ON AUTHOR.ID=MANUSCRIPT.AUTHOR_ID
   UNION
-  SELECT SECONDARY_AUTHOR.FNAME AS AuthorFName, SECONDARY_AUTHOR.LNAME AS AuthorLName, MANUSCRIPT.TITLE AS ManuscriptTitle, 
+  SELECT SECONDARY_AUTHOR.FNAME AS AuthorFName, SECONDARY_AUTHOR.LNAME AS AuthorLName, MANUSCRIPT.TITLE AS ManuscriptTitle,
   MANUSCRIPT.NUMBER AS ManuscriptNumber,  MANUSCRIPT.STATUS AS ManuscriptStatus, MANUSCRIPT.DATE_RECEIVED AS ManuscriptSubmissionTimestamp
   FROM SECONDARY_AUTHOR INNER JOIN MANUSCRIPT ON SECONDARY_AUTHOR.MANUSCRIPT_NUMBER=MANUSCRIPT.NUMBER
   ORDER BY AuthorLName, ManuscriptSubmissionTimestamp ASC;
 
 -- View: PublishedIssues
 
--- For all completed (published) issues, the issue year, issue number (1, 2, 3, or 4), 
--- the title of each manuscript included in that issue, with page numbers, ordered by issue name 
+-- For all completed (published) issues, the issue year, issue number (1, 2, 3, or 4),
+-- the title of each manuscript included in that issue, with page numbers, ordered by issue name
 -- and page numbers. Permissions: Author, Editor, Reviewer.
 
 -- check if not null to make sure issue contains manuscripts
 DROP VIEW IF EXISTS `PublishedIssues`;
 
 CREATE VIEW `PublishedIssues` AS
-  SELECT JOURNAL_ISSUE.YEAR AS IssueYear, JOURNAL_ISSUE.PERIOD AS IssuePeriod, 
+  SELECT JOURNAL_ISSUE.YEAR AS IssueYear, JOURNAL_ISSUE.PERIOD AS IssuePeriod,
   MANUSCRIPT.TITLE AS ManuscriptTitle, MANUSCRIPT.PAGE_NUMBER_IN_ISSUE AS PageInIssue
   FROM JOURNAL_ISSUE INNER JOIN MANUSCRIPT ON MANUSCRIPT.JOURNAL_ISSUE_YEAR=JOURNAL_ISSUE.YEAR AND MANUSCRIPT.JOURNAL_ISSUE_PERIOD=JOURNAL_ISSUE.PERIOD
   WHERE MANUSCRIPT.STATUS = 'Published' AND JOURNAL_ISSUE.DATE_PUBLISHED IS NOT NULL
@@ -583,14 +583,14 @@ CREATE VIEW `PublishedIssues` AS
 
 -- View: ReviewQueue
 
--- For all manuscripts in UnderReview state. The primary author, manuscript id, and assigned reviewer(s) are 
+-- For all manuscripts in UnderReview state. The primary author, manuscript id, and assigned reviewer(s) are
 -- included, ordered by increasing manuscript submission timestamp is included in the view. Also used by ReviewStatus view. Permissions: Editor.
 
--- Ensured that this returns appropriate data even when a manuscript 
+-- Ensured that this returns appropriate data even when a manuscript
 DROP VIEW IF EXISTS `ReviewQueue`;
 
 CREATE VIEW `ReviewQueue` AS
-  SELECT AUTHOR.FNAME AS AuthorFName, AUTHOR.LNAME AS AuthorLName, MANUSCRIPT.NUMBER AS ManuscriptNumber, 
+  SELECT AUTHOR.FNAME AS AuthorFName, AUTHOR.LNAME AS AuthorLName, MANUSCRIPT.NUMBER AS ManuscriptNumber,
   REVIEWER.FNAME AS ReviewerFName, REVIEWER.LNAME AS ReviewerLName, MANUSCRIPT.DATE_RECEIVED AS ManuscriptSubmissionTimestamp
   FROM MANUSCRIPT INNER JOIN AUTHOR ON MANUSCRIPT.AUTHOR_ID = AUTHOR.ID
   INNER JOIN REVIEWER_GROUP ON MANUSCRIPT.NUMBER = REVIEWER_GROUP.MANUSCRIPT_NUMBER
@@ -602,8 +602,8 @@ CREATE VIEW `ReviewQueue` AS
 
 -- View: WhatsLeft
 
--- For all manuscripts, the current status and the remaining steps 
--- (e.g., ‘underreview’, typeset’, etc.) following the current status. 
+-- For all manuscripts, the current status and the remaining steps
+-- (e.g., ‘underreview’, typeset’, etc.) following the current status.
 -- When a manuscript is in ‘underreview’ state its next step will be either
 -- ‘accepted’ or ‘rejected’. Permissions: Editor.
 
@@ -615,15 +615,15 @@ CREATE VIEW `ReviewQueue` AS
 DROP VIEW IF EXISTS `WhatsLeft`;
 
 CREATE VIEW `WhatsLeft` AS
-  SELECT MANUSCRIPT.NUMBER AS ManuscriptNumber, MANUSCRIPT.STATUS as ManuscriptStatus, 
-  (CASE 
-    WHEN MANUSCRIPT.STATUS='Received' THEN 'Under Review or Rejected' 
-    WHEN MANUSCRIPT.STATUS='Under Review' THEN 'Accepted or Rejected' 
-    WHEN MANUSCRIPT.STATUS='Accepted' THEN 'Typeset' 
-    WHEN MANUSCRIPT.STATUS='Typeset' THEN 'Scheduled' 
-    WHEN MANUSCRIPT.STATUS='Scheduled' THEN 'Published'  
-    WHEN MANUSCRIPT.STATUS='Published' THEN 'N/A' 
-    WHEN MANUSCRIPT.STATUS='Rejected' THEN 'N/A' 
+  SELECT MANUSCRIPT.NUMBER AS ManuscriptNumber, MANUSCRIPT.STATUS as ManuscriptStatus,
+  (CASE
+    WHEN MANUSCRIPT.STATUS='Received' THEN 'Under Review or Rejected'
+    WHEN MANUSCRIPT.STATUS='Under Review' THEN 'Accepted or Rejected'
+    WHEN MANUSCRIPT.STATUS='Accepted' THEN 'Typeset'
+    WHEN MANUSCRIPT.STATUS='Typeset' THEN 'Scheduled'
+    WHEN MANUSCRIPT.STATUS='Scheduled' THEN 'Published'
+    WHEN MANUSCRIPT.STATUS='Published' THEN 'N/A'
+    WHEN MANUSCRIPT.STATUS='Rejected' THEN 'N/A'
     ELSE 'Error' END) AS NextSteps
   FROM MANUSCRIPT
   ORDER BY MANUSCRIPT.STATUS;
@@ -641,9 +641,9 @@ CREATE VIEW `WhatsLeft` AS
 DROP VIEW IF EXISTS `ReviewStatus`;
 
 CREATE VIEW `ReviewStatus` AS
-  SELECT MANUSCRIPT.NUMBER AS ManuscriptNumber, MANUSCRIPT.TITLE AS ManuscriptTitle, 
-  REVIEWER_GROUP.DATE_MAN_SENT_FOR_REVIEW AS DateManSentForReview, REVIEW.APPROPRIATENESS AS Appropriateness, 
-  REVIEW.CLARITY AS Clarity, REVIEW.METHODOLOGY AS Methodology, REVIEW.CONTRIBUTION AS Contribution, 
+  SELECT MANUSCRIPT.NUMBER AS ManuscriptNumber, MANUSCRIPT.TITLE AS ManuscriptTitle,
+  REVIEWER_GROUP.DATE_MAN_SENT_FOR_REVIEW AS DateManSentForReview, REVIEW.APPROPRIATENESS AS Appropriateness,
+  REVIEW.CLARITY AS Clarity, REVIEW.METHODOLOGY AS Methodology, REVIEW.CONTRIBUTION AS Contribution,
   REVIEW.RECOMMENDATION AS Recommendation, REVIEW.DATE_REVIEW_RECEIVED AS DateReviewReceived
   FROM REVIEW NATURAL JOIN MANUSCRIPT NATURAL JOIN REVIEWER_GROUP
   WHERE MANUSCRIPT.NUMBER=REVIEW.MANUSCRIPT_NUMBER AND REVIEW.REVIEWER_NUMBER=REVIEWER_GROUP.REVIEWER_NUMBER
@@ -655,9 +655,7 @@ DROP VIEW IF EXISTS `OnlyReviewer`;
 
 CREATE VIEW `OnlyReviewer` AS
   SELECT REVIEWER_GROUP.MANUSCRIPT_NUMBER as ManuscriptNumber, REVIEWER.NUMBER as ReviewerNumber
-  FROM REVIEWER_GROUP  
+  FROM REVIEWER_GROUP
   LEFT JOIN REVIEWER ON REVIEWER_GROUP.REVIEWER_NUMBER = REVIEWER.NUMBER
   WHERE REVIEWER.STATUS='Active'
   GROUP BY REVIEWER_GROUP.MANUSCRIPT_NUMBER HAVING COUNT(REVIEWER_GROUP.MANUSCRIPT_NUMBER) = 1;
-
-
