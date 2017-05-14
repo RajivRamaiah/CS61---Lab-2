@@ -7,8 +7,10 @@ import sys
 import random
 import time    
 from datetime import date, datetime, timedelta
+import getpass
 
-def registerEditor(con, fname, lname):
+
+def registerEditor(con, fname, lname, Master_Key):
 	addEditor = ("INSERT INTO EDITOR "
 		"(FNAME,LNAME) "
 		"VALUES (%s, %s)")
@@ -19,15 +21,32 @@ def registerEditor(con, fname, lname):
 	cursor.execute(addEditor, editorData)
 	con.commit()
 
-
-
 	getLastEditorNumberQuery = ("SELECT EDITOR.ID AS ID FROM EDITOR ORDER BY EDITOR.ID ASC;")
 	cursor.execute(getLastEditorNumberQuery)
 	newNumber = 0
 	for (number,) in cursor:
 		newNumber = int(number)
 
-	print("You have succesfully registered as editor #" + str(newNumber) + "! You can now log in!")
+	print("You have succesfully registered as Editor #" + str(newNumber) + "!")
+
+	password1 = ""
+	one = 0
+	two = 0
+	while (one == 0 and two == 0):
+		password1 = getpass.getpass(prompt='Please enter a password to use when you log in: ')
+		password2 = getpass.getpass(prompt='Verify password: ')
+		if (password1 == password2):
+			one = 1
+			two = 1
+		else:
+			print("The passwords you entered do not match. Try again:")
+			print()
+
+	credentialQuery = ("INSERT INTO CREDENTIALS VALUES ('EDITOR', " + str(newNumber)  +", AES_ENCRYPT('" + password1 + "','" + Master_Key + "'));")
+	cursor.execute(credentialQuery)
+	con.commit()
+
+	print("Succes! Your password has been set. You can now log in!")
 
 def startEditorShell(con, id):
 	try:
@@ -102,6 +121,20 @@ def startEditorShell(con, id):
 
 			elif (textArray[0] == "assign"):
 				if (len(textArray) == 3):
+
+					# check it is the editors manuscript to alter
+					checkEditorAssigned = ("SELECT MANUSCRIPT.NUMBER as Num FROM MANUSCRIPT WHERE MANUSCRIPT.EDITOR_ID=" + id + ";")
+					cursor.execute(checkEditorAssigned)
+
+					isEditors = 0
+					for (Num, ) in cursor:
+						if (str(Num) == textArray[1]):
+							isEditors = 1
+					if(isEditors == 0):
+						print("ERROR: Insufficient Permission. \nYou cannot alter a manuscript not assigned to you as an editor.")
+						continue
+
+
 					receivedTime = datetime.now().replace(microsecond=0)
 
 					addReviewerForManuscript = ("INSERT INTO REVIEWER_GROUP "
@@ -125,6 +158,19 @@ def startEditorShell(con, id):
 
 			elif (textArray[0] == "reject"):
 				if (len(textArray) == 2):
+
+					# check it is the editors manuscript to alter
+					checkEditorAssigned = ("SELECT MANUSCRIPT.NUMBER as Num FROM MANUSCRIPT WHERE MANUSCRIPT.EDITOR_ID=" + id + ";")
+					cursor.execute(checkEditorAssigned)
+
+					isEditors = 0
+					for (Num, ) in cursor:
+						if (str(Num) == textArray[1]):
+							isEditors = 1
+					if(isEditors == 0):
+						print("ERROR: Insufficient Permission. \nYou cannot alter a manuscript not assigned to you as an editor.")
+						continue
+
 					updateManuscriptStatusToRejected = ("UPDATE MANUSCRIPT SET STATUS='Rejected' WHERE MANUSCRIPT.NUMBER=" + textArray[1] + ";")
 					cursor.execute(updateManuscriptStatusToRejected)
 					con.commit()
@@ -133,7 +179,19 @@ def startEditorShell(con, id):
 					continue
 			elif (textArray[0] == "accept"):
 				if (len(textArray) == 2):
-					print("accept!")
+
+					# check it is the editors manuscript to alter
+					checkEditorAssigned = ("SELECT MANUSCRIPT.NUMBER as Num FROM MANUSCRIPT WHERE MANUSCRIPT.EDITOR_ID=" + id + ";")
+					cursor.execute(checkEditorAssigned)
+
+					isEditors = 0
+					for (Num, ) in cursor:
+						if (str(Num) == textArray[1]):
+							isEditors = 1
+					if(isEditors == 0):
+						print("ERROR: Insufficient Permission. \nYou cannot alter a manuscript not assigned to you as an editor.")
+						continue
+
 					receivedTime = datetime.now().replace(microsecond=0)
 					updateManuscriptStatusToAccepted = ("UPDATE MANUSCRIPT SET STATUS='Accepted' WHERE MANUSCRIPT.NUMBER=" + textArray[1] + ";")
 					cursor.execute(updateManuscriptStatusToAccepted)
@@ -150,6 +208,19 @@ def startEditorShell(con, id):
 					continue
 			elif (textArray[0] == "typeset"):
 				if (len(textArray) == 3):
+
+					# check it is the editors manuscript to alter
+					checkEditorAssigned = ("SELECT MANUSCRIPT.NUMBER as Num FROM MANUSCRIPT WHERE MANUSCRIPT.EDITOR_ID=" + id + ";")
+					cursor.execute(checkEditorAssigned)
+
+					isEditors = 0
+					for (Num, ) in cursor:
+						if (str(Num) == textArray[1]):
+							isEditors = 1
+					if(isEditors == 0):
+						print("ERROR: Insufficient Permission. \nYou cannot alter a manuscript not assigned to you as an editor.")
+						continue
+
 					updateManuscriptStatusToTypeset = ("UPDATE MANUSCRIPT SET STATUS='Typeset' WHERE MANUSCRIPT.NUMBER=" + textArray[1] + ";")
 					cursor.execute(updateManuscriptStatusToTypeset)
 					con.commit()
@@ -162,6 +233,19 @@ def startEditorShell(con, id):
 					continue
 			elif (textArray[0] == "schedule"):
 				if (len(textArray) == 4):
+
+					# check it is the editors manuscript to alter
+					checkEditorAssigned = ("SELECT MANUSCRIPT.NUMBER as Num FROM MANUSCRIPT WHERE MANUSCRIPT.EDITOR_ID=" + id + ";")
+					cursor.execute(checkEditorAssigned)
+
+					isEditors = 0
+					for (Num, ) in cursor:
+						if (str(Num) == textArray[1]):
+							isEditors = 1
+					if(isEditors == 0):
+						print("ERROR: Insufficient Permission. \nYou cannot alter a manuscript not assigned to you as an editor.")
+						continue
+
 					exit = 0
 
 					#check its been typeset
@@ -261,9 +345,9 @@ def startEditorShell(con, id):
 
 					exists = 0;
 					for (ManNumber,) in cursor:
-						print(ManNumber)
 						exists += 1
 
+					# it has issues
 					if (exists >= 1):
 						checkIfJournalPublished = ("SELECT JOURNAL_ISSUE.DATE_PUBLISHED as DatePubl FROM JOURNAL_ISSUE WHERE YEAR=" + textArray[1] + " AND PERIOD=" + textArray[2] + ";")
 						cursor = con.cursor()
@@ -290,11 +374,10 @@ def startEditorShell(con, id):
 
 	except mysql.connector.Error as e:
 		print("SQL Error: {0}".format(e.msg))
-		print("Sorry, you entered an invalid data format for your last command! For security reasons you have been logged out! Please be sure to follow the READ.ME documentation!")
+		print("ERROR: Incorrect command syntax. \nFor security reasons you have been logged out! \nPlease be sure to follow the READ.ME documentation!")
 	except:
 		print("Unexpected error: {0}".format(sys.exc_info()[0]))
-		print("Sorry, you entered an invalid data format for your last command! For security reasons you have been logged out! Please be sure to follow the READ.ME documentation!")
-
+		print("ERROR: Incorrect command syntax. \nFor security reasons you have been logged out! \nPlease be sure to follow the READ.ME documentation!")
 
 	
 	cursor.close()

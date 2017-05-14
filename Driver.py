@@ -4,10 +4,12 @@ import sys								# for errors
 from Author import *
 from Editor import *
 from Reviewer import *
+import time
+import getpass
 
 SERVER   = "sunapee.cs.dartmouth.edu"
 USERNAME = "rajiv" 
-PASSWORD = "AA12345678"# raw_input("Enter the MASTER_KEY: ")
+PASSWORD = getpass.getpass(prompt='Please Enter The Database Master Key: ')
 DATABASE = "rajiv_db"
 
 if __name__ == "__main__":
@@ -15,8 +17,6 @@ if __name__ == "__main__":
 	try:
 		# initialize db connection
 		con = mysql.connector.connect(host=SERVER,user=USERNAME,password=PASSWORD, database=DATABASE)
-
-		print("Connection established.")
 
 		loop = True
 		while loop:
@@ -29,46 +29,120 @@ if __name__ == "__main__":
 
 			# REGISTER
 			if (textArray[0] == "register"):
-				if (textArray[1] == "author"):
-					print("REGISTERING AUTHOR")
-					registerAuthor(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6])
+				if(len(textArray) == 7):
+					if (textArray[1] == "author"):
+						print("Registering Author . . .")
+						registerAuthor(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], PASSWORD)
 
-
+				# register|editor|fname|lname
 				if (textArray[1] == "editor"):
-					print("REGISTERING EDITOR")
-					registerEditor(con, textArray[2], textArray[3])
-
+					print("Registering Editor . . .")
+					registerEditor(con, textArray[2], textArray[3], PASSWORD)
 
 				# register|reviewer|fname|lname|email|affiliation|one|two|three
 				if (textArray[1] == "reviewer"):
 					if (len(textArray) == 7):
-						print("One")
-						registerReviewerWithOne(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6])
+						print("Registering Reviewer . . .")
+						registerReviewerWithOne(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], PASSWORD)
 					elif (len(textArray) == 8):
-						print("Two")
-						registerReviewerWithTwo(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7])
+						print("Registering Reviewer . . .")
+						registerReviewerWithTwo(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7], PASSWORD)
 					elif (len(textArray) == 9):
-						print("Three")
-						registerReviewerWithThree(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7], textArray[8])
+						print("Registering Reviewer . . .")
+						registerReviewerWithThree(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7], textArray[8], PASSWORD)
 					else:
 						print("ERROR: Must register reviewer with 1-3 RI Codes")
-					print("REGISTERING REVIEWER")
 
 			# LOGIN
 			elif (textArray[0] == "login"):
-				if (textArray[1] == "author"):
-					print("Logging you in! Please wait one moment . . .")
-					print()
-					startAuthorShell(con, textArray[2])
+				if(len(textArray) == 3):
+					if (textArray[1] == "author"):
+						PASSWORD = "AA12345678" #must reset since it is lost after the first login
+						userpass = getpass.getpass(prompt='Please enter your password: ')
+						cursor = con.cursor()
+						checkPassword = ("SELECT AES_DECRYPT(CREDENTIALS.PASSWORD, '" + PASSWORD + "') AS PASSWORD FROM CREDENTIALS WHERE CREDENTIALS.USER_TYPE='AUTHOR' AND CREDENTIALS.ID=" + textArray[2] + ";")
+						cursor.execute(checkPassword)
 
-				if (textArray[1] == "editor"):
-					print("LOGIN EDITOR")
-					startEditorShell(con, textArray[2])
+						decryptedPassword = ""
+						for (PASSWORD,) in cursor:
+							decryptedPassword = PASSWORD
 
-				if (textArray[1] == "reviewer"):
-					print("LOGIN REVIEWER")
-					startReviewerShell(con, textArray[2])
+						cursor.close()
+						print(userpass, decryptedPassword)
+						if(userpass == decryptedPassword):
+							print("Loging In . . .")
+							time.sleep(1)
+							print()
 
+							startAuthorShell(con, textArray[2])
+						else:
+							print("ERROR: You entered an incorrect password.")
+
+					elif (textArray[1] == "editor"):
+
+						PASSWORD = "AA12345678" #must reset since it is lost after the first login
+						userpass = getpass.getpass(prompt='Please enter your password: ')
+						cursor = con.cursor()
+						checkPassword = ("SELECT AES_DECRYPT(CREDENTIALS.PASSWORD, '" + PASSWORD + "') AS PASSWORD FROM CREDENTIALS WHERE CREDENTIALS.USER_TYPE='EDITOR' AND CREDENTIALS.ID=" + textArray[2] + ";")
+						cursor.execute(checkPassword)
+
+						decryptedPassword = ""
+						for (PASSWORD,) in cursor:
+							decryptedPassword = PASSWORD
+
+						cursor.close()
+						if(userpass == decryptedPassword):
+							print("Loging In . . .")
+							time.sleep(1)
+							print()
+
+
+							startEditorShell(con, textArray[2])
+
+						else:
+							print("ERROR: You entered an incorrect password.")
+
+		
+
+					elif (textArray[1] == "reviewer"):
+						cursor = con.cursor()
+						checkIfResigned = ("SELECT REVIEWER.STATUS AS Status FROM REVIEWER WHERE REVIEWER.NUMBER=" + textArray[2] + ";")
+						cursor.execute(checkIfResigned)
+
+						resigned = 0
+						for (Status,) in cursor:
+							if(Status == "Resigned"):
+								resigned = 1
+
+						if (resigned==1):
+							print("ERROR: Resigned Reviewer. \nYou cannot login since you have resigned. \nPlease contact the system administrator to reactivate your acount.")
+							continue
+
+						PASSWORD = "AA12345678" #must reset since it is lost after the first login
+						userpass = getpass.getpass(prompt='Please enter your password: ')
+						cursor = con.cursor()
+						checkPassword = ("SELECT AES_DECRYPT(CREDENTIALS.PASSWORD, '" + PASSWORD + "') AS PASSWORD FROM CREDENTIALS WHERE CREDENTIALS.USER_TYPE='REVIEWER' AND CREDENTIALS.ID=" + textArray[2] + ";")
+						cursor.execute(checkPassword)
+
+						decryptedPassword = ""
+						for (PASSWORD,) in cursor:
+							decryptedPassword = PASSWORD
+
+						cursor.close()
+						if(userpass == decryptedPassword):
+							print("Loging In . . .")
+							time.sleep(2)
+							print()
+
+							startReviewerShell(con, textArray[2])
+						else:
+							print("ERROR: You entered an incorrect password.")
+
+					else:
+						print ("ERROR: There is an error in your syntax. Please try again.")
+
+				else:
+					print ("ERROR: There is an error in your syntax. Please try again.")
 			elif (textArray[0] == "exit"):
 				break
 
@@ -76,13 +150,15 @@ if __name__ == "__main__":
 				print ("ERROR: There is an error in your syntax. Please try again.")
 
 
+		con.close()
 
 	except mysql.connector.Error as e:
-		print("SQL Error: {0}".format(e.msg))
+		if(e.msg == "Access denied for user 'rajiv'@'10.31.196.1' (using password: YES)"):
+			print("ERROR: You entered an incorrect Master Key.")
+		else:
+			print("SQL Error: {0}".format(e.msg))
+			print("ERROR: Incorrect command syntax. \nFor security reasons you have been logged out! \nPlease be sure to follow the READ.ME documentation!")
 	except:
 		print("Unexpected error: {0}".format(sys.exc_info()[0]))
-
-	con.close()
-
-	print("\nConnection terminated.", end='')
+		print("ERROR: Incorrect command syntax. \nFor security reasons you have been logged out! \nPlease be sure to follow the READ.ME documentation!")
 

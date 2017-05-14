@@ -6,16 +6,17 @@ import mysql.connector					# mysql functionality
 import sys			
 import random
 import time    
+import getpass
 from datetime import date, datetime, timedelta
+import getpass
 
-def registerAuthor(con, firstname, lastname, address, email, affiliation):
+def registerAuthor(con, firstname, lastname, address, email, affiliation, MASTER_KEY):
 	add_author = ("INSERT INTO AUTHOR "
 		"(FNAME,LNAME,MAILING_ADDRESS,E_MAIL,AFFILIATION) "
 		"VALUES (%s, %s, %s, %s, %s)")
 	data_author = (firstname, lastname, address, email,  affiliation)
 	# Insert new employee
 	cursor = con.cursor()
-	print("Registering . . . ")
 	cursor.execute(add_author, data_author)
 	con.commit()
 
@@ -25,7 +26,26 @@ def registerAuthor(con, firstname, lastname, address, email, affiliation):
 	for (number,) in cursor:
 		newNumber = int(number)
 
-	print("You have succesfully registered as author #" + str(newNumber) + "! You can now log in!")
+	print("You have succesfully registered as author #" + str(newNumber) + "!")
+	password1 = ""
+	one = 0
+	two = 0
+	while (one == 0 and two == 0):
+		password1 = getpass.getpass(prompt='Please enter a password to use when you log in: ')
+		password2 = getpass.getpass(prompt='Verify password: ')
+		if (password1 == password2):
+			one = 1
+			two = 1
+		else:
+			print("The passwords you entered do not match. Try again:")
+			print()
+
+	credentialQuery = ("INSERT INTO CREDENTIALS VALUES ('AUTHOR', " + str(newNumber)  +", AES_ENCRYPT('" + password1 + "','" + MASTER_KEY + "'));")
+	cursor.execute(credentialQuery)
+	con.commit()
+
+	print("Succes! Your password has been set. You can now log in!")
+
 
 def showStatus(con):
 	statusQuery = ("SELECT MANUSCRIPT.STATUS as Status, COUNT(*) as Count FROM MANUSCRIPT WHERE MANUSCRIPT.AUTHOR_ID=" + id +  " GROUP BY MANUSCRIPT.STATUS;")
@@ -122,7 +142,7 @@ def startAuthorShell(con, id):
 					print (realAuthorID , id)
 
 					if (int(realAuthorID) != int(id)):
-						print("You cannot retract a manuscript that you did not submit or aren't the primary author for!")
+						print("You cannot retract a manuscript that you aren't the primary author for!")
 					elif (int(realAuthorID) == int(id)):
 						answer = raw_input('Are you sure you want to retract manuscript ' + textArray[1] + '? (yes/no)')
 						if (answer == "yes"):
@@ -217,7 +237,7 @@ def startAuthorShell(con, id):
 					cursor.execute(updateAuthorAffiliation)
 					con.commit()
 
-					manuscriptData = (textArray[1], "Received", textArray[6], receivedTime, textArray[3], id, editorToAssign, value, value, value, value, value, value, )
+					manuscriptData = (textArray[1], "Received", textArray[6], receivedTime, textArray[3], id, editorToAssign, value, value, value, value, value, value)
 
 					print("Submitting manuscript . . . ")
 					cursor.execute(addManuscript, manuscriptData)
@@ -298,8 +318,10 @@ def startAuthorShell(con, id):
 
 	except mysql.connector.Error as e:
 		print("SQL Error: {0}".format(e.msg))
+		print("ERROR: Incorrect command syntax. \nFor security reasons you have been logged out! \nPlease be sure to follow the READ.ME documentation!")
 	except:
 		print("Unexpected error: {0}".format(sys.exc_info()[0]))
+		print("ERROR: Incorrect command syntax. \nFor security reasons you have been logged out! \nPlease be sure to follow the READ.ME documentation!")
 
 	
 	cursor.close()

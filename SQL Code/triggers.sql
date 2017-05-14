@@ -52,7 +52,7 @@ CREATE TRIGGER on_reviewer_resignation BEFORE UPDATE ON REVIEWER
     FOR EACH ROW BEGIN
 
     -- Checks update is for reviewer resigning
-    IF NEW.STATUS='RESIGNED' THEN
+    IF NEW.STATUS='Resigned' THEN
 
         -- IF the reviewer being updated is the only reviewer for one or more manuscripts
         IF(SELECT COUNT(*) FROM OnlyReviewer WHERE OnlyReviewer.ReviewerNumber=OLD.NUMBER) > 0 THEN
