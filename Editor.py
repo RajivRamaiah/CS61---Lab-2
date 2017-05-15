@@ -212,7 +212,7 @@ def startEditorShell(con, id):
 							cursor.execute(updateManuscriptStatusToUnderReview)
 							con.commit()
 
-							print("Succesfully added a reviewer for manuscript #" + str(textArray[1]) + "!")
+							print("Successfully added a reviewer for manuscript #" + str(textArray[1]) + "!")
 						else:
 							print("ERROR: Duplicate Assignment \nThe assignment already exists!")
 					else:
