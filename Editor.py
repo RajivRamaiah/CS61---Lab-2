@@ -157,7 +157,7 @@ def startEditorShell(con, id):
 				print()
 				print("To register as an author, enter: 'register|author|<fname>|<lname>|<address>|<email>|<affiliation>'")
 				print("To register as an editor, enter: 'register|editor|<fname>|<lname>'")
-				print("To register as a reviewer, enter: 'register|reviewer|<fname>|<lname>|<affiliation>|<ricode1>|<ricode2>|<ricode3>'")
+				print("To register as a reviewer, enter: 'register|reviewer|<fname>|<lname>|email|<affiliation>|<ricode1>|<ricode2>|<ricode3>'")
 				print()
 				print("To login, simply enter 'login|<usertype>|<userID>'")
 				print("To logout, simply enter 'exit'")
