@@ -26,7 +26,7 @@ def addReviewer(con, firstname, lastname, email, affiliation, Master_Key):
 	for (number,) in cursor:
 		newNumber = int(number)
 
-	print("You have succesfully registered as Reviewer #" + str(newNumber) + "!")
+	print("You have successfully registered as Reviewer #" + str(newNumber) + "!")
 
 	password1 = ""
 	one = 0
@@ -45,7 +45,7 @@ def addReviewer(con, firstname, lastname, email, affiliation, Master_Key):
 	cursor.execute(credentialQuery)
 	con.commit()
 
-	print("Succes! Your password has been set. You can now log in!")
+	print("Success! Your password has been set. You can now log in!")
 
 def addRICode(con, RICode):
 	cursor = con.cursor()
@@ -140,11 +140,13 @@ def startReviewerShell(con, id):
 		print()
 		print("Commands at your service:")
 		print()
-		print("'resign|<reviewer#>' -> Allows you to remove yourself from service. ")
+		print("'resign' -> Allows you to remove yourself from service. ")
 		print()
 		print("'review|reject|<manu#>|<appropriateness#>|<clarity#>|<methodology#>|<contribution#>' \n   -> Allows you to submit a review for a manuscript to reject." )
 		print()
 		print("'review|accept|<manu#>|<appropriateness#>|<clarity#>|<methodology#>|<contribution#>' \n   -> Allows you to submit a review for a manuscript to accept." )
+		print()
+		print("To logout, simply enter 'logout'!")
 		print()
 
 
@@ -163,6 +165,7 @@ def startReviewerShell(con, id):
 
 
 			elif (textArray[0] == "logout"):
+				print("You have been logged out. Have a great day!")
 				break
 
 			elif (textArray[0] == "resign"):
@@ -172,9 +175,9 @@ def startReviewerShell(con, id):
 						resignReviewer = ("UPDATE REVIEWER SET STATUS='Resigned' WHERE REVIEWER.NUMBER=" + id + ";")
 						cursor.execute(resignReviewer)
 						con.commit()
-						print("You have succesfully resigned and have been logged out. \nThank you for your service. "
+						print("You have successfully resigned and have been logged out. \nThank you for your service. "
 							"Please contact the system administrator \nif you want to reactivate your account. ")
-						break;
+						break
 
 				else:
 					print("ERROR: Incorrect command syntax. Please make sure your command is appropriate as documented in the READ.ME. Thanks!")
@@ -216,7 +219,6 @@ def startReviewerShell(con, id):
 					# only allow reviews for manuscript that reviewer is assigned to and that is under review
 					if (count == 1 and isUnderReview == 1):
 						receivedTime = datetime.now().replace(microsecond=0)
-						print("manuscript is reviewers")
 
 						addReview = ("INSERT INTO REVIEW "
 							"(REVIEWER_NUMBER,MANUSCRIPT_NUMBER,DATE_REVIEW_RECEIVED,APPROPRIATENESS,CLARITY,METHODOLOGY,CONTRIBUTION,RECOMMENDATION) "
@@ -224,6 +226,8 @@ def startReviewerShell(con, id):
 						reviewData = (id, textArray[2], receivedTime, textArray[3], textArray[4], textArray[5], textArray[6], textArray[1])
 						cursor.execute(addReview, reviewData)
 						con.commit() 
+
+						print("Successfully submitted review!")
 
 					else:
 						print("ERROR: No Permission! \nYou cannot submit a review for a manuscript that you \nare not currently assigned to review (i.e in Under Review status)")

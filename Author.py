@@ -26,7 +26,7 @@ def registerAuthor(con, firstname, lastname, address, email, affiliation, MASTER
 	for (number,) in cursor:
 		newNumber = int(number)
 
-	print("You have succesfully registered as author #" + str(newNumber) + "!")
+	print("You have successfully registered as author #" + str(newNumber) + "!")
 	password1 = ""
 	one = 0
 	two = 0
@@ -44,7 +44,7 @@ def registerAuthor(con, firstname, lastname, address, email, affiliation, MASTER
 	cursor.execute(credentialQuery)
 	con.commit()
 
-	print("Succes! Your password has been set. You can now log in!")
+	print("Success! Your password has been set. You can now log in!")
 
 def showStatus(con, id):
 
@@ -106,6 +106,9 @@ def startAuthorShell(con, id):
 		print("'retract|<ManuscriptNumber' \n   -> Removes one of your manuscripts.")
 		print()
 		print("'submit|<title>|<Affiliation>|<RICode>|<author2>|<author3>|<author4>|<filename>' \n   -> Allows you to submit a manuscript")
+		print()
+		print("To logout, simply enter 'logout'!")
+		print()
 
 		loop = True
 		while loop:
@@ -134,7 +137,6 @@ def startAuthorShell(con, id):
 					realAuthorID = 0
 					for (AuthorID,) in cursor:
 						realAuthorID = int(AuthorID)
-					print (realAuthorID , id)
 
 					if (int(realAuthorID) != int(id)):
 						print("You cannot retract a manuscript that you aren't the primary author for!")
@@ -164,6 +166,9 @@ def startAuthorShell(con, id):
 							cursor.execute(deleteQuery4)
 							con.commit()
 
+							print("Successfully retracted your manuscript!")
+							print()
+
 			elif (textArray[0] == "submit"):
 				try:
 					#find number of editors in system
@@ -189,7 +194,19 @@ def startAuthorShell(con, id):
 						" VALUES (%s, %s, %s, %s)")
 
 					if (len(textArray) == 8):
-						print("reached if statement 8")
+						name = textArray[4].split(' ')
+						if(len(name) != 2):
+							print("ERROR: Secondary Authors must have a first and last name separated by a space!")
+							continue
+						name = textArray[5].split(' ')
+						if(len(name) != 2):
+							print("ERROR: Secondary Authors must have a first and last name separated by a space!")
+							continue
+						name = textArray[6].split(' ')
+						if(len(name) != 2):
+							print("ERROR: Secondary Authors must have a first and last name separated by a space!")
+							continue
+
 
 						updateAuthorAffiliation = ("UPDATE AUTHOR SET AFFILIATION= '" + textArray[2] + "' WHERE AUTHOR.ID=" + id + ";")
 						cursor.execute(updateAuthorAffiliation)
@@ -209,23 +226,38 @@ def startAuthorShell(con, id):
 
 
 						name = textArray[4].split(' ')
+
 						secondaryAuthorData = (name[0], name[1], newNumber, 1)
 						cursor.execute(addSecondaryAuthor, secondaryAuthorData)
 						con.commit()
 
+
 						name = textArray[5].split(' ')
+
 						secondaryAuthorData2 = (name[0], name[1], newNumber, 2)
 						cursor.execute(addSecondaryAuthor, secondaryAuthorData2)
 						con.commit()
+
 
 						name = textArray[6].split(' ')
 						secondaryAuthorData3 = (name[0], name[1], newNumber, 3)
 						cursor.execute(addSecondaryAuthor, secondaryAuthorData3)
 						con.commit()
 
-						print("You have succesfully submitted manuscript #" + str(newNumber) + "!!!")
+
+						print("You have successfully submitted manuscript #" + str(newNumber) + "!!!")
 
 					elif (len(textArray) == 7):
+
+						name = textArray[4].split(' ')
+						if(len(name) != 2):
+							print("ERROR: Secondary Authors must have a first and last name separated by a space!")
+							continue
+						name = textArray[5].split(' ')
+						if(len(name) != 2):
+							print("ERROR: Secondary Authors must have a first and last name separated by a space!")
+							continue
+
 
 						updateAuthorAffiliation = ("UPDATE AUTHOR SET AFFILIATION= '" + textArray[2] + "' WHERE AUTHOR.ID=" + id + ";")
 						cursor.execute(updateAuthorAffiliation)
@@ -252,10 +284,15 @@ def startAuthorShell(con, id):
 						secondaryAuthorData2 = (name[0], name[1], newNumber, 2)
 						cursor.execute(addSecondaryAuthor, secondaryAuthorData2)
 						con.commit()
+				
 
-						print("You have succesfully submitted manuscript #" + str(newNumber) + "!!!")
+						print("You have successfully submitted manuscript #" + str(newNumber) + "!!!")
 
 					elif (len(textArray) == 6):
+						name = textArray[4].split(' ')
+						if(len(name) != 2):
+							print("ERROR: Secondary Authors must have a first and last name separated by a space!")
+							continue
 
 						updateAuthorAffiliation = ("UPDATE AUTHOR SET AFFILIATION= '" + textArray[2] + "' WHERE AUTHOR.ID=" + id + ";")
 						cursor.execute(updateAuthorAffiliation)
@@ -273,12 +310,11 @@ def startAuthorShell(con, id):
 						for (number,) in cursor:
 							newNumber = int(number)
 
-						name = textArray[4].split(' ')
 						secondaryAuthorData = (name[0], name[1], newNumber, 1)
 						cursor.execute(addSecondaryAuthor, secondaryAuthorData)
 						con.commit()
 
-						print("You have succesfully submitted manuscript #" + str(newNumber) + "!!!")
+						print("You have successfully submitted manuscript #" + str(newNumber) + "!!!")
 
 					elif (len(textArray) == 5):
 
@@ -299,7 +335,7 @@ def startAuthorShell(con, id):
 						for (number,) in cursor:
 							newNumber = int(number)
 
-						print("You have succesfully submitted manuscript #" + str(newNumber) + "!!!")
+						print("You have successfully submitted manuscript #" + str(newNumber) + "!!!")
 
 
 					else:

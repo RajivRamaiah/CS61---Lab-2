@@ -16,7 +16,7 @@ if __name__ == "__main__":
 		con = mysql.connector.connect(host=Config.SERVER,user=Config.USERNAME,password=Config.PASSWORD, database=Config.DATABASE)
 
 		loop = True
-		FinalPassword = getpass.getpass(prompt='Please Enter The Database Master Key: ')
+		FinalPassword = getpass.getpass(prompt='Please Enter The Master Key: ')
 		print()
 		print("Hello. Welcome to the manuscript management system. From here, you can register as an")
 		print("editor/author/reviewer or login if you already have an account as one of those users.")
@@ -26,6 +26,7 @@ if __name__ == "__main__":
 		print("To register as a reviewer, enter: 'register|reviewer|<fname>|<lname>|<affiliation>|<ricode1>|<ricode2>|<ricode3>'")
 		print()
 		print("To login, simply enter 'login|<usertype>|<userID>'")
+		print("To logout, simply enter 'exit'")
 		print()
 
 		while loop:
@@ -163,6 +164,7 @@ if __name__ == "__main__":
 				else:
 					print ("ERROR: There is an error in your syntax. Please try again.")
 			elif (textArray[0] == "exit"):
+				print("GoodBye!")
 				break
 
 			else:

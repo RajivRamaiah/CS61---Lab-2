@@ -27,7 +27,7 @@ def registerEditor(con, fname, lname, Master_Key):
 	for (number,) in cursor:
 		newNumber = int(number)
 
-	print("You have succesfully registered as Editor #" + str(newNumber) + "!")
+	print("You have successfully registered as Editor #" + str(newNumber) + "!")
 
 	password1 = ""
 	one = 0
@@ -46,7 +46,7 @@ def registerEditor(con, fname, lname, Master_Key):
 	cursor.execute(credentialQuery)
 	con.commit()
 
-	print("Succes! Your password has been set. You can now log in!")
+	print("Success! Your password has been set. You can now log in!")
 
 
 def showStatus(con, id):
@@ -102,7 +102,6 @@ def startEditorShell(con, id):
 			ifExists += 1
 			print("Hello {} {}.".format(FirstName, LastName))
 			print()
-			print("The following table shows you the number of manuscripts \nunder your guidance and the status they are in:")
 
 		if (ifExists == 0):
 			print("The editor id you entered is invalid!")
@@ -127,6 +126,8 @@ def startEditorShell(con, id):
 			print("'schedule|<manu#>|<issueyear>|<issueperiod>' -> Allows you to schedule a manuscript for an issue.")
 			print()
 			print("'publish|<issueyear>|<issueperiod>' -> Allows you to publish an issue for print.")
+			print()
+			print("To logout, simply enter 'logout'!")
 			print()
 
 
@@ -180,7 +181,6 @@ def startEditorShell(con, id):
 
 					validAssignment = 0
 					for (CODE, ) in cursor:
-						print(CODE, code)
 						if(str(code) == str(CODE)):
 							validAssignment = 1
 
@@ -241,6 +241,8 @@ def startEditorShell(con, id):
 					updateManuscriptStatusToRejected = ("UPDATE MANUSCRIPT SET STATUS='Rejected' WHERE MANUSCRIPT.NUMBER=" + textArray[1] + ";")
 					cursor.execute(updateManuscriptStatusToRejected)
 					con.commit()
+
+					print("Successfully rejected the manuscript.")
 				else:
 					print("ERROR: Please enter a valid command. See the READ.ME documentation for help.")
 					continue
@@ -268,7 +270,7 @@ def startEditorShell(con, id):
 					cursor.execute(updateAcceptedDate)
 					con.commit()
 
-					print("Succesfully updated manuscript to accepted")
+					print("Successfully updated manuscript to accepted.")
 
 				else:
 					print("ERROR: Please enter a valid command. See the READ.ME documentation for help.")
@@ -295,6 +297,8 @@ def startEditorShell(con, id):
 					updatePageNumbers = ("UPDATE MANUSCRIPT SET NUMBER_OF_PAGES='" + textArray[2] + "' WHERE MANUSCRIPT.NUMBER=" + textArray[1] + ";")
 					cursor.execute(updatePageNumbers)
 					con.commit()
+
+					print("Successfully typeset the manuscript.")
 				else:
 					print("ERROR: Please enter a valid command. See the READ.ME documentation for help.")
 					continue
@@ -323,14 +327,10 @@ def startEditorShell(con, id):
 					status = ""
 					for (Status,) in cursor:
 						status = str(Status)
-					print (status , textArray[1])
 
 					if (status != "Typeset"):
 						print("You cannot schedule a manuscript that hasn't been typeset yet! Trying this again could result in your expulsion as an editor. . .")
 						continue
-
-					print("Issue is in proper status = typeset")
-
 
 					checkIfJournalPublished = ("SELECT JOURNAL_ISSUE.DATE_PUBLISHED as DatePubl FROM JOURNAL_ISSUE WHERE YEAR=" + textArray[2] + " AND PERIOD=" + textArray[3] + ";")
 					cursor = con.cursor()
@@ -345,9 +345,6 @@ def startEditorShell(con, id):
 						exit = 1
 					if (exit == 1):
 						continue
-
-					print("journal to schedule for hasn't been published!")
-
 
 					# Check pages aren't greater than 100
 					sumPages = 0
@@ -395,6 +392,8 @@ def startEditorShell(con, id):
 					cursor.execute(updateManuscriptStatusToScheduled)
 					con.commit()
 
+					print("Successfully scheduled manuscript!")
+
 				else:
 					print("ERROR: Please enter a valid command. See the READ.ME documentation for help.")
 					continue
@@ -431,7 +430,18 @@ def startEditorShell(con, id):
 						updateIssue = ("UPDATE JOURNAL_ISSUE SET DATE_PUBLISHED='" +  str(receivedTime) + "' WHERE YEAR=" + textArray[1] +  " AND PERIOD= "  + textArray[2] + ";")
 						cursor.execute(updateIssue)
 						con.commit()
-						print("Succesfully published the issue!")
+
+
+						getManuscriptsToPublish = ("SELECT MANUSCRIPT.NUMBER as Num FROM MANUSCRIPT WHERE MANUSCRIPT.JOURNAL_ISSUE_YEAR=" + textArray[1] + " AND MANUSCRIPT.JOURNAL_ISSUE_PERIOD=" + textArray[2] +";")
+						cursor.execute(getManuscriptsToPublish)
+
+						for (Num, ) in cursor:
+							updateManuscriptStatusToPublished = ("UPDATE MANUSCRIPT SET STATUS='Published', MANUSCRIPT.JOURNAL_ISSUE_YEAR='" + textArray[1] 
+								+ "', MANUSCRIPT.JOURNAL_ISSUE_PERIOD='" + textArray[2] + "' WHERE MANUSCRIPT.NUMBER=" + str(Num) + ";")
+							cursor.execute(updateManuscriptStatusToPublished)
+							con.commit()
+
+						print("Successfully published the issue!")
 					else:
 						print("ERROR: The issue you want to publish has no manuscripts assigned to it. This is unaccepable. . . Please schedule manuscripts for this issue before publishing.")
 				else:
