@@ -56,24 +56,33 @@ if __name__ == "__main__":
 						print("Registering Author . . .")
 						registerAuthor(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], FinalPassword)
 
-				# register|editor|fname|lname
-				if (textArray[1] == "editor"):
-					print("Registering Editor . . .")
-					registerEditor(con, textArray[2], textArray[3], FinalPassword)
 
-				# register|reviewer|fname|lname|email|affiliation|one|two|three
-				if (textArray[1] == "reviewer"):
-					if (len(textArray) == 7):
-						print("Registering Reviewer . . .")
-						registerReviewerWithOne(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], FinalPassword)
-					elif (len(textArray) == 8):
-						print("Registering Reviewer . . .")
-						registerReviewerWithTwo(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7], FinalPassword)
-					elif (len(textArray) == 9):
-						print("Registering Reviewer . . .")
-						registerReviewerWithThree(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7], textArray[8], FinalPassword)
+				# register|editor|fname|lname
+				if (len(textArray) == 4):
+					if (textArray[1] == "editor"):
+						print("Registering Editor . . .")
+						registerEditor(con, textArray[2], textArray[3], FinalPassword)
 					else:
-						print("ERROR: Must register reviewer with 1-3 RI Codes")
+						print ("ERROR: There is an error in your syntax. Please try again.")
+
+					# register|reviewer|fname|lname|email|affiliation|one|two|three
+				if (len(textArray) > 1):
+					if (textArray[1] == "reviewer"):
+						if (len(textArray) == 7):
+							print("Registering Reviewer . . .")
+							registerReviewerWithOne(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], FinalPassword)
+						elif (len(textArray) == 8):
+							print("Registering Reviewer . . .")
+							registerReviewerWithTwo(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7], FinalPassword)
+						elif (len(textArray) == 9):
+							print("Registering Reviewer . . .")
+							registerReviewerWithThree(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7], textArray[8], FinalPassword)
+						else:
+							print("ERROR: Must register reviewer with 1-3 RI Codes")
+					else:
+						print ("ERROR: There is an error in your syntax. Please try again.")
+				else:
+					print ("ERROR: There is an error in your syntax. Please try again.")
 
 			# LOGIN
 			elif (textArray[0] == "login"):

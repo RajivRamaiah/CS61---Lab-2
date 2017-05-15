@@ -33,6 +33,7 @@ When you log in as a user of any type, the commands you can run must be separate
 - Use `logout` to logout of your user when your are logged in
 - For any editors/authors/reviewers in the system as a result of running Setup.sql, which is any user you don't register, their password is: `a`
 - We assume that the values will be of appropriate type (i.e String or Int) when inserting data.
+- For `filename` when inserting a manuscript, this should be any string since we were not required to implement blobs.
 - Reviewers can resign by simply entering `resign` while they are logged in and the command does not require them to enter their id.
 - Reviewers do not change the status of a manuscript to rejected or accepted when they submit a review, instead it is up to the editor after looking at each review to make the judgement call. The functionality to allow an editor to see reviews for their manuscripts can be added later.
 - Only a maximum of 3 secondary author can be submitted along with a manuscript.
