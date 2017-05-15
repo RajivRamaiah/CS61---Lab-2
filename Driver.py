@@ -23,7 +23,7 @@ if __name__ == "__main__":
 		print()
 		print("To register as an author, enter: 'register|author|<fname>|<lname>|<address>|<email>|<affiliation>'")
 		print("To register as an editor, enter: 'register|editor|<fname>|<lname>'")
-		print("To register as a reviewer, enter: 'register|reviewer|<fname>|<lname>|<affiliation>|<ricode1>|<ricode2>|<ricode3>'")
+		print("To register as a reviewer, enter: 'register|reviewer|<fname>|<lname>|email|<affiliation>|<ricode1>|<ricode2>|<ricode3>'")
 		print()
 		print("To login, simply enter 'login|<usertype>|<userID>'")
 		print("To logout, simply enter 'exit'")
@@ -51,6 +51,10 @@ if __name__ == "__main__":
 
 			# REGISTER
 			if (textArray[0] == "register"):
+				if(len(textArray) == 6):
+					print ("ERROR: There is an error in your syntax. Please try again.")
+					continue
+
 				if(len(textArray) == 7):
 					if (textArray[1] == "author"):
 						print("Registering Author . . .")
@@ -64,6 +68,7 @@ if __name__ == "__main__":
 						registerEditor(con, textArray[2], textArray[3], FinalPassword)
 					else:
 						print ("ERROR: There is an error in your syntax. Please try again.")
+						continue
 
 					# register|reviewer|fname|lname|email|affiliation|one|two|three
 				if (len(textArray) > 1):
@@ -79,8 +84,10 @@ if __name__ == "__main__":
 							registerReviewerWithThree(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7], textArray[8], FinalPassword)
 						else:
 							print("ERROR: Must register reviewer with 1-3 RI Codes")
+							continue
 				else:
 					print ("ERROR: There is an error in your syntax. Please try again.")
+					continue
 
 			# LOGIN
 			elif (textArray[0] == "login"):
