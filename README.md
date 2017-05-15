@@ -36,6 +36,7 @@ When you log in as a user of any type, the commands you can run must be separate
 - For `filename` when inserting a manuscript, this should be any string since we were not required to implement blobs.
 - Reviewers can resign by simply entering `resign` while they are logged in and the command does not require them to enter their id.
 - Reviewers do not change the status of a manuscript to rejected or accepted when they submit a review, instead it is up to the editor after looking at each review to make the judgement call. The functionality to allow an editor to see reviews for their manuscripts can be added later.
+- Because reviewers cannot change the status of a manuscript, I prevent them from submitting multiple reviews for the same manuscript by showing an appropriate error message.
 - Only a maximum of 3 secondary author can be submitted along with a manuscript.
 - We did not implement blob on submit as stated was allowed by the Professor.
 - When registering an author, we do mailing address before email, and we allow them to submit a preliminary affiliation as well. This affiliation can be updated if or when they submit a new paper as well.

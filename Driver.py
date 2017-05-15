@@ -79,8 +79,6 @@ if __name__ == "__main__":
 							registerReviewerWithThree(con, textArray[2], textArray[3], textArray[4], textArray[5], textArray[6], textArray[7], textArray[8], FinalPassword)
 						else:
 							print("ERROR: Must register reviewer with 1-3 RI Codes")
-					else:
-						print ("ERROR: There is an error in your syntax. Please try again.")
 				else:
 					print ("ERROR: There is an error in your syntax. Please try again.")
 
