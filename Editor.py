@@ -150,6 +150,19 @@ def startEditorShell(con, id):
 
 			elif (textArray[0] == "logout"):
 				print("You have been logged out. Have a great day!")
+
+				print()
+				print("Hello. Welcome to the manuscript management system. From here, you can register as an")
+				print("editor/author/reviewer or login if you already have an account as one of those users.")
+				print()
+				print("To register as an author, enter: 'register|author|<fname>|<lname>|<address>|<email>|<affiliation>'")
+				print("To register as an editor, enter: 'register|editor|<fname>|<lname>'")
+				print("To register as a reviewer, enter: 'register|reviewer|<fname>|<lname>|<affiliation>|<ricode1>|<ricode2>|<ricode3>'")
+				print()
+				print("To login, simply enter 'login|<usertype>|<userID>'")
+				print("To logout, simply enter 'exit'")
+				print()
+				
 				break
 
 			# assign <manu#> <reviewer id>
